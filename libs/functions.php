@@ -30,4 +30,12 @@ function exeQuery($sql, $conn){
 function closeConDB($conn){
 	$conn->close();	
 }
+
+function getJobStatus($j){
+	if($j == 10){
+		return "เปิดรับคนทำงาน";
+	}else if($j == 20){
+		return "ปิดรับคนทำงาน";
+	}
+}
 ?>

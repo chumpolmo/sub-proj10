@@ -5,13 +5,9 @@ include 'tpls/header.php';
 <script>
 $(document).ready(function(){
   $.post("src/get_data.php",
-  { type: 3 },
+  { type: 5, st: 0, end: 8 },
   function(data, status){
-    let obj = JSON.parse(data);
-    $("#dbapply").html(obj.apply);
-    $("#dbaccept").html(obj.accept);
-    $("#dbfarm").html(obj.farm);
-    $("#dbprod").html(obj.prod);
+    $("#outprod").html(data);
   });
 });
 </script>
@@ -28,26 +24,7 @@ $(document).ready(function(){
     <span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16"><?=_TITLE_PRODUCT?></span>
   </div>
   <div class="w3-row w3-container">
-    <div class="w3-col l4 m4 w3-pale-yellow w3-container w3-padding-16 w3-border-right w3-border-bottom">
-      <img src="figs/figure_0001.jpg" title="xxx" style="width:100%;">
-      <div class="w3-container w3-center">
-        <p>xxx</p>
-      </div>
-    </div>
-
-    <div class="w3-col l4 m4 w3-pale-yellow w3-container w3-padding-16 w3-border-right w3-border-bottom">
-      <img src="figs/figure_0002.jpg" title="xxx" style="width:100%;">
-      <div class="w3-container w3-center">
-        <p>xxx</p>
-      </div>
-    </div>
-
-    <div class="w3-col l4 m4 w3-pale-yellow w3-container w3-padding-16 w3-border-right w3-border-bottom">
-      <img src="figs/figure_0001.jpg" title="xxx" style="width:100%;">
-      <div class="w3-container w3-center">
-        <p>xxx</p>
-      </div>
-    </div>
+    <div id="outprod"><i class="fa fa-refresh w3-text-gray w3-center" title="Loading..."></i></div>
   </div>
 
 </div>

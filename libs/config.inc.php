@@ -9,4 +9,5 @@ define("_TITLE_PRODUCT", "ผลิตภัณฑ์ชุมชน");
 define("_TITLE_JOB_DESCRIPTION", "รายละเอียดการจ้างงาน");
 define("_TITLE_PRODUCT_DESCRIPTION", "รายละเอียดผลิตภัณฑ์ชุมชน");
 define("_CANCEL", "ยกเลิก");
+define("_THB", "บาท");
 ?>
