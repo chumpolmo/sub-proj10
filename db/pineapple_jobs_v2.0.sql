@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 17, 2023 at 06:44 AM
+-- Generation Time: Feb 17, 2023 at 07:39 AM
 -- Server version: 8.0.32
 -- PHP Version: 8.1.6
 
@@ -84,7 +84,7 @@ INSERT INTO `jobs` (`Job_ID`, `Job_Title`, `Job_Description`, `Job_Salary`, `Job
 --
 
 CREATE TABLE `jobs_occupation` (
-  `Jobs_ID` int NOT NULL,
+  `Job_ID` int NOT NULL,
   `Occ_ID` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -92,10 +92,21 @@ CREATE TABLE `jobs_occupation` (
 -- Dumping data for table `jobs_occupation`
 --
 
-INSERT INTO `jobs_occupation` (`Jobs_ID`, `Occ_ID`) VALUES
+INSERT INTO `jobs_occupation` (`Job_ID`, `Occ_ID`) VALUES
 (1, 1),
 (2, 3),
 (3, 4);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `jobs_resume`
+--
+
+CREATE TABLE `jobs_resume` (
+  `Job_ID` int NOT NULL,
+  `Res_ID` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -234,7 +245,7 @@ ALTER TABLE `jobs`
 -- Indexes for table `jobs_occupation`
 --
 ALTER TABLE `jobs_occupation`
-  ADD PRIMARY KEY (`Jobs_ID`,`Occ_ID`),
+  ADD PRIMARY KEY (`Job_ID`,`Occ_ID`),
   ADD KEY `FK_JO_OCC_ID` (`Occ_ID`);
 
 --
@@ -337,7 +348,7 @@ ALTER TABLE `jobs`
 --
 ALTER TABLE `jobs_occupation`
   ADD CONSTRAINT `FK_JO_OCC_ID` FOREIGN KEY (`Occ_ID`) REFERENCES `occupation` (`Occ_ID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  ADD CONSTRAINT `FK_JOB_ID` FOREIGN KEY (`Jobs_ID`) REFERENCES `jobs` (`Job_ID`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+  ADD CONSTRAINT `FK_JOB_ID` FOREIGN KEY (`Job_ID`) REFERENCES `jobs` (`Job_ID`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `news`
