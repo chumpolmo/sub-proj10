@@ -5,7 +5,7 @@ include '../libs/functions.php';
 $conn = connectDB();
 
 if($_POST['type'] == 1){
-	$sql = "SELECT * FROM product LIMIT 0,5";
+	$sql = "SELECT * FROM product ORDER BY Pro_Added DESC LIMIT 0,5";
 	$result = $conn->query($sql);
 
 	if ($result->num_rows > 0) {
@@ -53,13 +53,25 @@ if($_POST['type'] == 3){
 }
 
 if($_POST['type'] == 4){
+	$key = "";
+	$cond = "";
+	if(isset($_POST['key']) && !empty($_POST['key'])){
+		$key = $_POST['key'];
+		$cond = "AND (J.Job_Title LIKE \"%$key%\" OR J.Job_Description LIKE \"%$key%\" OR J.Job_Note LIKE \"%$key%\")";
+	}
+	if(isset($_POST['pagenum'])){
+		$pagenum = $_POST['pagenum'];
+	}
 	$st = $_POST['st'];
-	$end = $_POST['end'];
 
-	$sql = "SELECT J.Job_ID, J.Job_Title, F.Farm_Name FROM jobs AS J INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID LIMIT $st,$end";
+	$sql = "SELECT J.Job_ID, J.Job_Title, F.Farm_Name FROM jobs AS J INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID $cond LIMIT $st, "._PER_PAGE_1;
 	$result = $conn->query($sql);
 
 	if ($result->num_rows > 0) {
+	  echo '<div class="w3-container">';
+	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$result->num_rows.' รายการ';
+	  echo '</div>';
+	  echo '<div class="w3-container">';
 	  while($row = $result->fetch_assoc()) {
     	echo '<div class="w3-col l4 m4 w3-pale-yellow w3-container w3-padding-16 w3-border-left w3-border-bottom">';
     	echo '<div class="w3-container">';
@@ -68,6 +80,30 @@ if($_POST['type'] == 4){
     	echo '<a href="job_description.php?act=APPLY&job_id='.$row['Job_ID'].'" class="w3-button w3-yellow w3-right">สมัครงาน</a>';
     	echo '</div></div>';
 	  }
+	  echo '</div>';
+		echo '<div class="w3-container">';
+	  echo '<div class="w3-center">';
+	  echo '<div class="w3-bar w3-border-bottom w3-border-left w3-border-right">';
+	  echo '<div class="w3-bar-item w3-button">หน้า</div>';
+	  $nop = ceil($result->num_rows / _PER_PAGE_1);
+	  if($nop < 1){
+			$nop = 1;
+		}
+		$pagenum = 1;
+		if ($pagenum < 1) {
+			$pagenum = 1;
+		}
+		else if ($pagenum > $nop) {
+			$pagenum = $nop;
+		}
+	  for($p = 0; $p < $nop; $p++){
+	  	if($pagenum == ($p+1))
+  			echo '<div class="w3-bar-item w3-button">'.($p+1).'</div>';
+  		else
+  			echo '<a class="w3-bar-item w3-button" onclick="getData(4, '.($p+1).','.($p * _PER_PAGE_1).',\''.$key.'\')">'.($p+1).'</a>';
+  	}
+		echo '</div></div>';
+		echo '</div>';
 	} else {
     	echo '<div class="w3-col l4 m4 w3-pale-yellow w3-container w3-padding-16 w3-border-left w3-border-bottom">';
     	echo '<div class="w3-container">';
@@ -96,18 +132,30 @@ if($_POST['type'] == 41){
   echo '<tr><th>เริ่มเผยแพร่</th><td>'.$row['Job_Added'].'</td><td></td><td></td></tr>';
   echo '<tr><th>ปรับปรุงล่าสุด</th><td>'.$row['Job_Updated'].'</td><td></td><td></td></tr>';
 	echo '<tr><th>ผู้เผยแพร่ข้อมูล</th><td>'.$row['User_Fullname'].'</td><td></td><td></td></tr>';
-  echo '<tr><td colspan="4"><div class="w3-button w3-right w3-green"><a href="applynow.php?act=APPLYNOW&job_id='.$row['Job_ID'].'"><i class="fa fa-paper-plane"></i> ยืนยันการสมัครงาน</a></div></td></tr>';
+  echo '<tr><td colspan="4"><div class="w3-button w3-right w3-green"><a href="proc_data.php?act=APPLYNOW&job_id='.$row['Job_ID'].'"><i class="fa fa-paper-plane"></i> ยืนยันการสมัครงาน</a></div></td></tr>';
   echo '</table>';
 }
 
 if($_POST['type'] == 5){
+	$key = "";
+	$cond = "";
+	if(isset($_POST['key']) && !empty($_POST['key'])){
+		$key = $_POST['key'];
+		$cond = "WHERE (P.Pro_Title LIKE \"%$key%\" OR P.Pro_Description LIKE \"%$key%\" OR P.Pro_Contact LIKE \"%$key%\")";
+	}
+	if(isset($_POST['pagenum'])){
+		$pagenum = $_POST['pagenum'];
+	}
 	$st = $_POST['st'];
-	$end = $_POST['end'];
 
-	$sql = "SELECT P.Pro_ID, P.Pro_Photo, P.Pro_Title FROM product AS P LIMIT $st,$end";
+	$sql = "SELECT P.Pro_ID, P.Pro_Photo, P.Pro_Title FROM product AS P $cond LIMIT $st, "._PER_PAGE_1;
 	$result = $conn->query($sql);
 
 	if ($result->num_rows > 0) {
+	  echo '<div class="w3-container">';
+	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$result->num_rows.' รายการ';
+	  echo '</div>';
+	  echo '<div class="w3-container">';
 	  while($row = $result->fetch_assoc()) {
     	echo '<div class="w3-col l4 m4 w3-pale-yellow w3-container w3-padding-16 w3-border-right w3-border-bottom">';
     	echo '<a href="prod_description.php?act=GET&pro_id='.$row["Pro_ID"].'" style="text-decoration: none;">';
@@ -117,6 +165,30 @@ if($_POST['type'] == 5){
       echo '</div></a>';
     	echo '</div>';
 	  }
+	  echo '</div>';
+	  echo '<div class="w3-container">';
+	  echo '<div class="w3-center">';
+	  echo '<div class="w3-bar w3-border-bottom w3-border-left w3-border-right">';
+	  echo '<div class="w3-bar-item w3-button">หน้า</div>';
+	  $nop = ceil($result->num_rows / _PER_PAGE_1);
+	  if($nop < 1){
+			$nop = 1;
+		}
+		$pagenum = 1;
+		if ($pagenum < 1) {
+			$pagenum = 1;
+		}
+		else if ($pagenum > $nop) {
+			$pagenum = $nop;
+		}
+	  for($p = 0; $p < $nop; $p++){
+	  	if($pagenum == ($p+1))
+  			echo '<div class="w3-bar-item w3-button">'.($p+1).'</div>';
+  		else
+  			echo '<a class="w3-bar-item w3-button" onclick="getData(5, '.($p+1).','.($p * _PER_PAGE_1).',\''.$key.'\')">'.($p+1).'</a>';
+  	}
+		echo '</div></div>';
+		echo '</div>';
 	} else {
     	echo '<div class="w3-col l4 m4 w3-pale-yellow w3-container w3-padding-16 w3-border-left w3-border-bottom">';
     	echo '<div class="w3-container">';
