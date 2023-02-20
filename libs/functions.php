@@ -1,6 +1,6 @@
 <?php
 function connectDB(){
-	$servername = "localhost";
+	$servername = "xxx";
 	$username = "xxx";
 	$password = "xxx";
 	$database = "xxx";
@@ -46,6 +46,14 @@ function getUsrStatus($j){
 		return "เจ้าของฟาร์ม";
 	}else if($j == 3){
 		return "ผู้สมัครงาน";
+	}
+}
+
+function getActiveStatus($j){
+	if($j == 1){
+		return "Active";
+	}else{
+		return "Inactive";
 	}
 }
 

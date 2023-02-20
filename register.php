@@ -28,6 +28,29 @@ function procData(){
     });
   });
 }
+
+function validateEmail(){
+  $(document).ready(function(){
+    $.post("src/get_data.php",
+    { 
+      usrEmail: $("#usrEmail").val(),
+      type: 7
+    },
+    function(data, status){
+      let txt = "";
+      let obj = JSON.parse(data);
+      if(obj.result == false){
+        txt = "<span class='w3-text-red'><i class='fa fa-times-circle-o'></i> อีเมลนี้มีในระบบฐานข้อมูลแล้ว กรุณาใช้อีเมลอื่น!</span>";
+        $("#outmail").html(txt);
+        $("#usrEmail").val("");
+        $("#usrEmail").focus();
+      }else{
+        txt = "<span class='w3-text-green'><i class='fa fa-check-circle-o'></i> อีเมลนี้สามารถใช้งานได้</span>";
+        $("#outmail").html(txt);
+      }
+    });
+  });
+}
 </script>
 </head>
 <body>
@@ -47,7 +70,7 @@ function procData(){
           <form action="src/proc_data.php" method="POST">
             <tr>
               <th>อีเมล (E-mail)</th>
-              <td><input class="w3-input w3-border" type="email" name="usrEmail" id="usrEmail" minlength="8" maxlength="100" required></td>
+              <td><input class="w3-input w3-border" type="email" name="usrEmail" id="usrEmail" minlength="8" maxlength="100" onchange="validateEmail()" required><div id="outmail"></div></td>
             </tr>
             <tr>
               <th>รหัสผ่าน (Password)</th>
@@ -58,7 +81,7 @@ function procData(){
               <th>สมัครสมาชิกประเภท</th>
               <td>
                 <input class="w3-radio" type="radio" name="usrType" id="usrType_2" value="2" required> เจ้าของฟาร์ม / ตัวแทนฟาร์ม<br>
-                <input class="w3-radio" type="radio" name="usrType" id="usrType_3" value="3" required> ฝากประวัติ / สมัครงาน / เผยแพร่ผลิตภัณฑ์ชุมชุน
+                <input class="w3-radio" type="radio" name="usrType" id="usrType_3" value="3" required> ฝากประวัติ / สมัครงาน
               </td>
             </tr>
             <tr>

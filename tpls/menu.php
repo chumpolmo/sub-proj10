@@ -4,7 +4,7 @@
       <a href="index.php" class="w3-bar-item w3-button w3-block">หน้าแรก</a>
       <a href="products.php" class="w3-bar-item w3-button w3-block">ผลิตภัณฑ์ชุมชน</a>
       <a href="apply.php" class="w3-bar-item w3-button w3-block">สมัครงาน</a>
-      <a href="resume.php" class="w3-bar-item w3-button w3-block">ฝากประวัติ</a>
+      <!-- <a class="w3-bar-item w3-button w3-block" onclick="document.getElementById('id01').style.display='block'">ฝากประวัติ</a> -->
       <a href="index.php#overview" class="w3-bar-item w3-button w3-block">ภาพรวมสถิติข้อมูล</a>
       <a href="index.php#contact" class="w3-bar-item w3-button w3-block">ติดต่อเรา</a>
       <a class="w3-bar-item w3-button w3-block w3-right" onclick="document.getElementById('id01').style.display='block'">เข้าสู่ระบบ</a>

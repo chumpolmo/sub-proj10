@@ -30,6 +30,31 @@ function showPwd() {
   }
 }
 
+function checkPassword(t){
+  if(t == 1){
+    let pcur = document.getElementById('usrPwdCur').value;
+    let ptmp = document.getElementById('usrPwdTmp').value;
+    if(pcur !== ptmp){
+      document.getElementById('usrPwdCur').value = "";
+      document.getElementById('usrPwdCur').focus();
+      document.getElementById('outcur').innerHTML = "<i class='fa fa-times-circle-o'></i> รหัสผ่านปัจจุบันไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง";
+    }else{
+      document.getElementById('outcur').innerHTML = "";
+    }
+  }
+  if(t == 2){
+    let pnew = document.getElementById('usrPwdNew').value;
+    let pcf = document.getElementById('usrCfPwdNew').value;
+    if(pnew !== pcf){
+      document.getElementById('usrCfPwdNew').value = "";
+      document.getElementById('usrCfPwdNew').focus();
+      document.getElementById('outnew').innerHTML = "<i class='fa fa-times-circle-o'></i> รหัสผ่านใหม่ไม่ตรงกัน กรุณาตรวจสอบอีกครั้ง";
+    }else{
+      document.getElementById('outnew').innerHTML = "";
+    }
+  }
+}
+
 function confirmInfo(s){
   if(confirm(s)){
     return true;

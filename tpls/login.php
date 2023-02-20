@@ -7,13 +7,14 @@
         <img src="figs/avatar01.png" style="width:20%;" class="w3-circle w3-margin-top w3-text-orange">
       </div>
 
-      <form class="w3-container" action="auths/index.php">
+      <form class="w3-container" action="src/proc_data.php" method="POST">
         <div class="w3-section">
           <label><b>อีเมล (E-mail)</b></label>
-          <input class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Enter E-mail" name="usremail" required>
+          <input class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Enter E-mail" name="usrEmail" required>
           <label><b>รหัสผ่าน (Password)</b></label>
-          <input class="w3-input w3-border" type="password" placeholder="Enter Password" name="psw" required>
+          <input class="w3-input w3-border" type="password" placeholder="Enter Password" name="usrPwd" required>
           <button class="w3-button w3-block w3-green w3-section w3-padding" type="submit">Login</button>
+          <input type="hidden" name="act" value="LOGIN">
         </div>
       </form>
 

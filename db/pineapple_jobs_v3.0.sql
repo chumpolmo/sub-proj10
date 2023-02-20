@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 18, 2023 at 03:03 PM
+-- Generation Time: Feb 20, 2023 at 05:32 PM
 -- Server version: 8.0.32
 -- PHP Version: 8.1.6
 
@@ -48,24 +48,6 @@ CREATE TABLE `farm` (
 
 INSERT INTO `farm` (`Farm_ID`, `Farm_Name`, `Farm_Description`, `Farm_Type`, `Farm_Note`, `Farm_Email`, `Farm_Phone`, `Farm_Address`, `Farm_Location`, `Farm_Added`, `Farm_Updated`, `User_ID`) VALUES
 (1, 'ฟาร์มถิ่นเมืองไทย', 'ฟาร์มถิ่นเมืองไทย', 1, '', 'thmth.farm@gmail.com', '0361111111', 'ตำบลเขาคันทรง อำเภอศรีราชา จังหวัดชลบุรี 20110', '13.0688962,101.1644211', '2023-02-15 08:34:33', '2023-02-15 08:34:33', 2);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `farm_product`
---
-
-CREATE TABLE `farm_product` (
-  `FP_ID` int NOT NULL,
-  `FP_Title` varchar(100) NOT NULL,
-  `FP_Quantity` int NOT NULL,
-  `FP_PricePU` double NOT NULL,
-  `FP_Unit` varchar(20) NOT NULL,
-  `FP_Month` int NOT NULL,
-  `FP_Year` int NOT NULL,
-  `FP_Added` timestamp NOT NULL,
-  `Farm_ID` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -182,16 +164,16 @@ CREATE TABLE `product` (
   `Pro_Contact` text NOT NULL,
   `Pro_Added` timestamp NOT NULL,
   `Pro_Updated` timestamp NOT NULL,
-  `User_ID` int NOT NULL
+  `Farm_ID` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `product`
 --
 
-INSERT INTO `product` (`Pro_ID`, `Pro_Title`, `Pro_Description`, `Pro_Photo`, `Pro_Quantity`, `Pro_PricePU`, `Pro_Month`, `Pro_Year`, `Pro_Unit`, `Pro_Contact`, `Pro_Added`, `Pro_Updated`, `User_ID`) VALUES
-(1, 'สับปะรดอบแห้ง', 'สับปะรดอบแห้ง ไม่มีน้ำตาล กินเจทานได้ คลีน ๆ เนื้อล้วน หวานธรรมชาติ', 'prod_figs/prod_1.jpg', 100, 80, 2, 2023, 'แพ็ค', 'กลุ่มวิสาหกิจชุมชนสับปะรดศรีราชา จังหวัดชลบุรี โทร. 0358898898', '2023-02-15 01:35:01', '2023-02-15 01:35:01', 2),
-(2, 'น้ำสับปะรดไซเดอร์', 'น้ำสับปะรดไซเดอร์ จากสับปะรดศรีราชา จ.ชลบุรี ช่วย ปรับกรดในกระเพาะให้ย่อยอาหารได้ดีเหมือนเดิมและมีจุลินทรีย์ดี ช่วยกำจัดลมในท้องและลำไส้', 'prod_figs/prod_2.jpg', 60, 120, 2, 2023, 'ขวด', 'กลุ่มวิสาหกิจชุมชนสับปะรดศรีราชา จังหวัดชลบุรี โทร. 0358898898', '2023-02-17 04:53:59', '2023-02-17 04:53:59', 2);
+INSERT INTO `product` (`Pro_ID`, `Pro_Title`, `Pro_Description`, `Pro_Photo`, `Pro_Quantity`, `Pro_PricePU`, `Pro_Month`, `Pro_Year`, `Pro_Unit`, `Pro_Contact`, `Pro_Added`, `Pro_Updated`, `Farm_ID`) VALUES
+(1, 'สับปะรดอบแห้ง', 'สับปะรดอบแห้ง ไม่มีน้ำตาล กินเจทานได้ คลีน ๆ เนื้อล้วน หวานธรรมชาติ', 'prod_figs/prod_1.jpg', 100, 80, 2, 2023, 'แพ็ค', 'กลุ่มวิสาหกิจชุมชนสับปะรดศรีราชา จังหวัดชลบุรี โทร. 0358898898', '2023-02-15 01:35:01', '2023-02-15 01:35:01', 1),
+(2, 'น้ำสับปะรดไซเดอร์', 'น้ำสับปะรดไซเดอร์ จากสับปะรดศรีราชา จ.ชลบุรี ช่วย ปรับกรดในกระเพาะให้ย่อยอาหารได้ดีเหมือนเดิมและมีจุลินทรีย์ดี ช่วยกำจัดลมในท้องและลำไส้', 'prod_figs/prod_2.jpg', 60, 120, 2, 2023, 'ขวด', 'กลุ่มวิสาหกิจชุมชนสับปะรดศรีราชา จังหวัดชลบุรี โทร. 0358898898', '2023-02-17 04:53:59', '2023-02-17 04:53:59', 1);
 
 -- --------------------------------------------------------
 
@@ -224,7 +206,7 @@ CREATE TABLE `resume` (
 CREATE TABLE `user` (
   `User_ID` int NOT NULL,
   `User_Email` varchar(100) NOT NULL,
-  `User_Password` varchar(255) NOT NULL,
+  `User_Password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `User_Fullname` varchar(100) NOT NULL,
   `User_Type` tinyint(1) NOT NULL,
   `User_Active` tinyint(1) NOT NULL,
@@ -238,8 +220,9 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`User_ID`, `User_Email`, `User_Password`, `User_Fullname`, `User_Type`, `User_Active`, `User_Added`, `User_Updated`) VALUES
 (1, 'admin@mail.com', 'Admin@1234', 'Administrator', 1, 1, '2023-02-03 10:44:57', '2023-02-03 10:44:57'),
-(2, 'ajkhaeg@mail.com', 'Ajkhaeg@1234', 'Khaeg Chumpol', 2, 1, '2023-02-03 10:45:47', '2023-02-03 10:45:47'),
-(3, 'mrjob@mail.com', 'Mrjob@1234', 'Mr.Job Pine', 3, 1, '2023-02-03 10:46:27', '2023-02-03 10:46:27');
+(2, 'ajkhaeg@mail.com', 'Ajk@1234', 'Aj.Khaeg Chumpol', 2, 1, '2023-02-03 10:45:47', '2023-02-03 10:45:47'),
+(3, 'mrjob@mail.com', 'Mrjob@1234', 'Mr.Job Pine', 3, 1, '2023-02-03 10:46:27', '2023-02-03 10:46:27'),
+(4, 'a@a.com', 'A123@321', '', 2, 0, '2023-02-20 09:25:17', '2023-02-20 09:25:17');
 
 --
 -- Indexes for dumped tables
@@ -251,12 +234,6 @@ INSERT INTO `user` (`User_ID`, `User_Email`, `User_Password`, `User_Fullname`, `
 ALTER TABLE `farm`
   ADD PRIMARY KEY (`Farm_ID`),
   ADD KEY `FK_USER_ID` (`User_ID`);
-
---
--- Indexes for table `farm_product`
---
-ALTER TABLE `farm_product`
-  ADD PRIMARY KEY (`FP_ID`);
 
 --
 -- Indexes for table `jobs`
@@ -316,12 +293,6 @@ ALTER TABLE `farm`
   MODIFY `Farm_ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `farm_product`
---
-ALTER TABLE `farm_product`
-  MODIFY `FP_ID` int NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `jobs`
 --
 ALTER TABLE `jobs`
@@ -355,7 +326,7 @@ ALTER TABLE `resume`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `User_ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `User_ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Constraints for dumped tables

@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 include '../libs/config.inc.php';
 include '../libs/functions.php';
 
@@ -198,7 +200,7 @@ if($_POST['type'] == 5){
 }
 
 if($_POST['type'] == 6){
-	$sql = "SELECT P.*, U.User_ID, U.User_Fullname FROM product AS P INNER JOIN user AS U ON P.User_ID=U.User_ID AND Pro_ID=".$_POST['pro_id'];
+	$sql = "SELECT P.*, F.Farm_ID, F.Farm_Name FROM product AS P INNER JOIN farm AS F ON P.Farm_ID=F.Farm_ID AND Pro_ID=".$_POST['pro_id'];
 	$result = $conn->query($sql);
 	$row = $result->fetch_assoc();
 
@@ -211,8 +213,70 @@ if($_POST['type'] == 6){
   echo '<tr><th>สนใจผลิตภัณฑ์ติดต่อ</th><td>'.$row['Pro_Contact'].'</td></tr>';
   echo '<tr><th>เริ่มเผยแพร่</th><td>'.$row['Pro_Added'].'</td></tr>';
   echo '<tr><th>ปรับปรุงล่าสุด</th><td>'.$row['Pro_Updated'].'</td></tr>';
-	echo '<tr><th>ผู้เผยแพร่ผลิตภัณฑ์</th><td>'.$row['User_Fullname'].'</td></tr>';
+	echo '<tr><th>ผู้เผยแพร่ผลิตภัณฑ์</th><td>'.$row['Farm_Name'].'</td></tr>';
   echo '</table>';
+}
+
+if($_POST['type'] == 7){
+	$usrEmail = testInput($_POST['usrEmail']);
+	$sql = "SELECT * FROM user WHERE User_Email Like \"".$usrEmail."\" ";
+	$result = $conn->query($sql);
+
+	if ($result->num_rows > 0) {
+		echo '{ "result": false }';
+	} else {
+	  echo '{ "result": true }';
+	}
+}
+
+if(isset($_POST['type']) && $_POST['type'] == 8){
+	$sql = "SELECT * FROM user WHERE (User_Email Like \"".$_SESSION['sessUserEmail']."\" AND User_Active=1)";
+	$result = $conn->query($sql);
+	$row = $result->fetch_assoc();
+
+  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
+  echo '<tr><th width="30%">อีเมล (E-mail)</th><td>'.$row['User_Email'].'</td></tr>';
+	echo '<tr><th>รหัสผ่าน</th><td>********</td></tr>';  
+  echo '<tr><th>ชื่อ-สกุล</th><td>'.$row['User_Fullname'].'</td></tr>';
+  echo '<tr><th>ประเภทผู้ใช้งาน</th><td>'.getUsrStatus($row['User_Type']).'</td></tr>';
+  echo '<tr><th>การเปิดใช้งาน</th><td>'.getActiveStatus($row['User_Active']).'</td></tr>';
+  echo '<tr><th>วันที่สมัคร</th><td>'.$row['User_Added'].'</td></tr>';
+  echo '<tr><th>วันที่ปรับปรุงล่าสุด</th><td>'.$row['User_Updated'].'</td></tr>';
+  echo '<tr><th></th><td><a href="user_setting.php" class="w3-button w3-orange"><i class="fa fa-pencil-square-o"></i> แก้ไขข้อมูล</a></td></tr>';
+  echo '</table><br>';
+  echo '<a href="index.php" class="w3-button w3-yellow"><i class="fa fa-arrow-left"></i> กลับหน้าแรก</a>';
+}
+
+if(isset($_POST['type']) && $_POST['type'] == 9){
+	$sql = "SELECT * FROM user WHERE (User_Email Like \"".$_SESSION['sessUserEmail']."\" AND User_Active=1)";
+	$result = $conn->query($sql);
+	$row = $result->fetch_assoc();
+
+	echo '<form action="../src/proc_data.php" method="POST">';
+  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
+  echo '<tr><th width="30%">อีเมล (E-mail)</th><td>'.$row['User_Email'].'</td></tr>';
+	echo '<tr><th>รหัสผ่าน</th><td>********</td></tr>';  
+  echo '<tr><th>ชื่อ-สกุล</th><td><input type="text" name="usrFullname" class="w3-input w3-border" value="'.$row['User_Fullname'].'" required></td></tr>';
+  echo '<tr><th>ประเภทผู้ใช้งาน</th><td>'.getUsrStatus($row['User_Type']).'</td></tr>';
+  echo '<tr><th>การเปิดใช้งาน</th><td>'.getActiveStatus($row['User_Active']).'</td></tr>';
+  echo '<tr><th>วันที่สมัคร</th><td>'.$row['User_Added'].'</td></tr>';
+  echo '<tr><th>วันที่ปรับปรุงล่าสุด</th><td>'.$row['User_Updated'].'</td></tr>';
+  echo '<tr><th></th><td><button type="submit" class="w3-button w3-green"><i class="fa fa-pencil-square-o"></i> แก้ไข</button><button type="reset" class="w3-button w3-red"><i class="fa fa-eraser"></i> เคลียร์</button></td></tr>';
+  echo '<input type="hidden" name="act" value="UPPROF">';
+  echo '</table><br>';
+  echo '</form>';
+  echo '<h5><b><i class="fa fa-key"></i> เปลี่ยนรหัสผ่าน</b></h5>';
+  echo '<form action="../src/proc_data.php" method="POST">';
+  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
+  echo '<tr><th width="30%">รหัสผ่านปัจจุบัน</th><td><input type="password" name="usrPwdCur" id="usrPwdCur" class="w3-input w3-border" onchange="return checkPassword(1)" required><div id="outcur" class="w3-text-red"></div></td></tr>';
+	echo '<tr><th>รหัสผ่านใหม่</th><td><input type="password" name="usrPwdNew" id="usrPwdNew" minlength="8" maxlength="100" class="w3-input w3-border" required></td></tr>';  
+  echo '<tr><th>ยืนยันรหัสผ่านใหม่</th><td><input type="password" name="usrCfPwdNew" id="usrCfPwdNew" minlength="8" maxlength="100" class="w3-input w3-border" onchange="return checkPassword(2)" required><div id="outnew" class="w3-text-red"></div></td></tr>';
+  echo '<tr><th></th><td><button type="submit" class="w3-button w3-green"><i class="fa fa-pencil-square-o"></i> แก้ไข</button><button type="reset" class="w3-button w3-red"><i class="fa fa-eraser"></i> เคลียร์</button></td></tr>';
+  echo '<input type="hidden" name="act" value="UPPWD">';
+  echo '<input type="hidden" name="usrPwdTmp" id="usrPwdTmp" value="'.$row['User_Password'].'">';
+  echo '</table><br>';
+  echo '</form>';
+  echo '<a href="user_profile.php" class="w3-button w3-yellow"><i class="fa fa-arrow-left"></i> ย้อนกลับ</a>';
 }
 
 closeConDB($conn);
