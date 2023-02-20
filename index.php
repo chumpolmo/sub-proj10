@@ -287,6 +287,11 @@ $(document).ready(function(){
 include 'tpls/footer.php';
 include 'tpls/login.php';
 ?>
+<script>
+  // Slideshow
+  var slideIndex = 1;
+  showDivs(slideIndex);
+</script>
 <script src="js/sp10.js"></script>
 </body>
 </html>

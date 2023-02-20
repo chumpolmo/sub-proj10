@@ -10,3 +10,4 @@
 <link rel="stylesheet" href="css/sp10.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="js/jquery.js"></script>
+<script src="js/sp10.js"></script>

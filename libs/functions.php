@@ -1,9 +1,9 @@
 <?php
 function connectDB(){
 	$servername = "localhost";
-	$username = "ajkhaeg";
-	$password = "nimda";
-	$database = "pineapple_jobs";
+	$username = "xxx";
+	$password = "xxx";
+	$database = "xxx";
 
 	// Create connection
 	$conn = new mysqli($servername, $username, $password, $database);
@@ -37,5 +37,22 @@ function getJobStatus($j){
 	}else if($j == 20){
 		return "ปิดรับคนทำงาน";
 	}
+}
+
+function getUsrStatus($j){
+	if($j == 1){
+		return "ผู้ดูแลระบบ";
+	}else if($j == 2){
+		return "เจ้าของฟาร์ม";
+	}else if($j == 3){
+		return "ผู้สมัครงาน";
+	}
+}
+
+function testInput($data) {
+  $data = trim($data);
+  $data = stripslashes($data);
+  $data = htmlspecialchars($data);
+  return $data;
 }
 ?>

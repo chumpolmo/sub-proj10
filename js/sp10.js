@@ -1,7 +1,3 @@
-// Slideshow
-var slideIndex = 1;
-showDivs(slideIndex);
-
 function plusDivs(n) {
   showDivs(slideIndex += n);
 }
@@ -24,4 +20,19 @@ function showDivs(n) {
   }
   x[slideIndex-1].style.display = "block";  
   dots[slideIndex-1].className += " w3-white";
+}
+
+function showPwd() {
+  if(document.getElementById('usrPwd').type === 'password'){
+    document.getElementById('usrPwd').type = 'text';
+  }else{
+    document.getElementById('usrPwd').type = 'password';
+  }
+}
+
+function confirmInfo(s){
+  if(confirm(s)){
+    return true;
+  }
+  return false;
 }

@@ -6,9 +6,11 @@ define("_TITLE_FOOTER", "โดย<br>โครงการย่อยที่
 define("_TITLE_CONTACT", "ติดต่อเรา");
 define("_TITLE_APPLY", "สมัครงาน");
 define("_TITLE_PRODUCT", "ผลิตภัณฑ์ชุมชน");
+define("_TITLE_REGISTER", "สมัครสมาชิก");
 define("_TITLE_JOB_DESCRIPTION", "รายละเอียดการจ้างงาน");
 define("_TITLE_PRODUCT_DESCRIPTION", "รายละเอียดผลิตภัณฑ์ชุมชน");
 define("_CANCEL", "ยกเลิก");
 define("_THB", "บาท");
 define("_PER_PAGE_1", 9);
+define("_ADMIN_EMAIL", "pineapple65.info@gmail.com");
 ?>
