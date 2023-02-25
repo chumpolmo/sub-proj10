@@ -253,31 +253,111 @@ if(isset($_POST['type']) && $_POST['type'] == 9){
 	$row = $result->fetch_assoc();
 
 	echo '<form action="../src/proc_data.php" method="POST">';
-  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
-  echo '<tr><th width="30%">อีเมล (E-mail)</th><td>'.$row['User_Email'].'</td></tr>';
+  	echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
+  	echo '<tr><th width="30%">อีเมล (E-mail)</th><td>'.$row['User_Email'].'</td></tr>';
 	echo '<tr><th>รหัสผ่าน</th><td>********</td></tr>';  
-  echo '<tr><th>ชื่อ-สกุล</th><td><input type="text" name="usrFullname" class="w3-input w3-border" value="'.$row['User_Fullname'].'" required></td></tr>';
-  echo '<tr><th>ประเภทผู้ใช้งาน</th><td>'.getUsrStatus($row['User_Type']).'</td></tr>';
-  echo '<tr><th>การเปิดใช้งาน</th><td>'.getActiveStatus($row['User_Active']).'</td></tr>';
-  echo '<tr><th>วันที่สมัคร</th><td>'.$row['User_Added'].'</td></tr>';
-  echo '<tr><th>วันที่ปรับปรุงล่าสุด</th><td>'.$row['User_Updated'].'</td></tr>';
-  echo '<tr><th></th><td><button type="submit" class="w3-button w3-green"><i class="fa fa-pencil-square-o"></i> แก้ไข</button><button type="reset" class="w3-button w3-red"><i class="fa fa-eraser"></i> เคลียร์</button></td></tr>';
-  echo '<input type="hidden" name="act" value="UPPROF">';
-  echo '</table><br>';
-  echo '</form>';
-  echo '<h5><b><i class="fa fa-key"></i> เปลี่ยนรหัสผ่าน</b></h5>';
-  echo '<form action="../src/proc_data.php" method="POST">';
-  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
-  echo '<tr><th width="30%">รหัสผ่านปัจจุบัน</th><td><input type="password" name="usrPwdCur" id="usrPwdCur" class="w3-input w3-border" onchange="return checkPassword(1)" required><div id="outcur" class="w3-text-red"></div></td></tr>';
+  	echo '<tr><th>ชื่อ-สกุล</th><td><input type="text" name="usrFullname" class="w3-input w3-border" value="'.$row['User_Fullname'].'" required></td></tr>';
+  	echo '<tr><th>ประเภทผู้ใช้งาน</th><td>'.getUsrStatus($row['User_Type']).'</td></tr>';
+  	echo '<tr><th>การเปิดใช้งาน</th><td>'.getActiveStatus($row['User_Active']).'</td></tr>';
+  	echo '<tr><th>วันที่สมัคร</th><td>'.$row['User_Added'].'</td></tr>';
+  	echo '<tr><th>วันที่ปรับปรุงล่าสุด</th><td>'.$row['User_Updated'].'</td></tr>';
+  	echo '<tr><th></th><td><button type="submit" class="w3-button w3-green"><i class="fa fa-pencil-square-o"></i> แก้ไข</button><button type="reset" class="w3-button w3-red"><i class="fa fa-eraser"></i> เคลียร์</button></td></tr>';
+  	echo '<input type="hidden" name="act" value="UPPROF">';
+  	echo '</table><br>';
+  	echo '</form>';
+  	echo '<h5><b><i class="fa fa-key"></i> เปลี่ยนรหัสผ่าน</b></h5>';
+  	echo '<form action="../src/proc_data.php" method="POST">';
+  	echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
+  	echo '<tr><th width="30%">รหัสผ่านปัจจุบัน</th><td><input type="password" name="usrPwdCur" id="usrPwdCur" class="w3-input w3-border" onchange="return checkPassword(1)" required><div id="outcur" class="w3-text-red"></div></td></tr>';
 	echo '<tr><th>รหัสผ่านใหม่</th><td><input type="password" name="usrPwdNew" id="usrPwdNew" minlength="8" maxlength="100" class="w3-input w3-border" required></td></tr>';  
-  echo '<tr><th>ยืนยันรหัสผ่านใหม่</th><td><input type="password" name="usrCfPwdNew" id="usrCfPwdNew" minlength="8" maxlength="100" class="w3-input w3-border" onchange="return checkPassword(2)" required><div id="outnew" class="w3-text-red"></div></td></tr>';
-  echo '<tr><th></th><td><button type="submit" class="w3-button w3-green"><i class="fa fa-pencil-square-o"></i> แก้ไข</button><button type="reset" class="w3-button w3-red"><i class="fa fa-eraser"></i> เคลียร์</button></td></tr>';
-  echo '<input type="hidden" name="act" value="UPPWD">';
-  echo '<input type="hidden" name="usrPwdTmp" id="usrPwdTmp" value="'.$row['User_Password'].'">';
-  echo '</table><br>';
-  echo '</form>';
-  echo '<a href="user_profile.php" class="w3-button w3-yellow"><i class="fa fa-arrow-left"></i> ย้อนกลับ</a>';
+  	echo '<tr><th>ยืนยันรหัสผ่านใหม่</th><td><input type="password" name="usrCfPwdNew" id="usrCfPwdNew" minlength="8" maxlength="100" class="w3-input w3-border" onchange="return checkPassword(2)" required><div id="outnew" class="w3-text-red"></div></td></tr>';
+  	echo '<tr><th></th><td><button type="submit" class="w3-button w3-green"><i class="fa fa-pencil-square-o"></i> แก้ไข</button><button type="reset" class="w3-button w3-red"><i class="fa fa-eraser"></i> เคลียร์</button></td></tr>';
+  	echo '<input type="hidden" name="act" value="UPPWD">';
+  	echo '<input type="hidden" name="usrPwdTmp" id="usrPwdTmp" value="'.$row['User_Password'].'">';
+  	echo '</table><br>';
+  	echo '</form>';
+  	echo '<a href="user_profile.php" class="w3-button w3-yellow"><i class="fa fa-arrow-left"></i> ย้อนกลับ</a>';
 }
+
+if(isset($_POST['type']) && ($_POST['type'] == 10 || $_POST['type'] == 11)){
+	$usrEmail = $_SESSION['sessUserEmail'];
+	$sql = "SELECT U.User_ID, R.* FROM user AS U INNER JOIN Resume AS R ON ";
+	$sql.= "U.User_Email Like \"".$usrEmail."\" AND (U.User_ID=R.User_ID)";
+	$result = $conn->query($sql);
+	$row = $result->fetch_assoc();
+	if ($result->num_rows <= 0 || $_POST['type'] == 11) {
+	  echo '<form action="../src/proc_data.php" method="POST">';
+	  $optResStatus = "";
+	  if($_POST['type'] == 11){
+	  	if(isset($row)){
+	  	  if($row['Res_Status'] == 10)
+	  		$optResStatus.= '<option value="10" selected>ฝากประวัติ</option>';	
+	  	  }else if($row['Res_Status'] == 20){
+	  		$optResStatus.= '<option value="20" disabled>สมัครงาน</option>';
+	  	  }else if($row['Res_Status'] == 30){
+	  		$optResStatus.= '<option value="30" disabled>ได้งานทำ</option>';
+	  	  }
+	  	echo '<input type="hidden" name="Res_ID" value="'.$row['Res_ID'].'">';
+	  	echo '<input type="hidden" name="act" value="UPRES">';
+	  }else{
+		echo '<input type="hidden" name="act" value="ADDRES">';
+		$optResStatus = '<option value="0" disabled>-ระบุสถานะ-</option>';
+	  	$optResStatus.= '<option value="10" selected>ฝากประวัติ</option>';
+	  	$optResStatus.= '<option value="20" disabled>สมัครงาน</option>';
+	  	$optResStatus.= '<option value="30" disabled>ได้งานทำ</option>';
+	  }
+	  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
+	  echo '<tr><th width="30%">ชื่อ</th><td><input type="text" name="resName" class="w3-input w3-border" value="'.$row['Res_Name'].'" required></td></tr>';
+	  echo '<tr><th>สกุล</th><td><input type="text" name="resSurname" class="w3-input w3-border" value="'.$row['Res_Surname'].'" required></td></tr>';  
+	  echo '<tr><th>อายุ</th><td><input type="number" name="resAge" value="'.$row['Res_Age'].'" style="width:25%;" required> ปี</td></tr>';
+	  echo '<tr><th>เบอร์ติดต่อ</th><td><input type="text" name="resPhone" class="w3-input w3-border" value="'.$row['Res_Phone'].'" required></td></tr>';
+	  echo '<tr><th>อีเมล</th><td><input type="text" name="resEmail" class="w3-input w3-border" value="'.$row['Res_Email'].'"></td></tr>';
+	  echo '<tr><th>ที่อยู่</th><td><textarea name="resAddress" class="w3-input w3-border">'.$row['Res_Address'].'</textarea></td></tr>';
+	  echo '<tr><th>สถานะ</th><td>';
+	  echo '<select class="w3-select w3-border" name="resStatus">'.$optResStatus.'</select>';
+	  echo '</td></tr>';
+	  echo '<tr><th>ตำแหน่งงานที่สนใจ</th><td>';
+	  echo '<select class="w3-select w3-border" name="Occ_ID">';
+	  echo '<option value="0">-ระบุตำแหน่งงานที่สนใจ-</option>';
+	  $sql_occ = "SELECT * FROM occupation";
+	  $res_occ = $conn->query($sql_occ);
+	  while($row_occ = $res_occ->fetch_assoc()){
+	  	if($row_occ['Occ_ID'] == $row['Occ_ID']){
+		  $sel = 'selected';
+	  	}else{
+	  	  $sel = '';
+	  	}
+	  	echo '<option value="'.$row_occ['Occ_ID'].'" '.$sel.'>'.$row_occ['Occ_Name'].'</option>';
+	  }
+	  echo '</select></td></tr>';
+	  echo '<tr><th>หมายเหตุ</th><td><textarea name="resNote" class="w3-input w3-border">'.$row['Res_Note'].'</textarea></td></tr>';
+	  echo '<tr><th></th><td><button type="submit" class="w3-button w3-green" onclick="return confirmInfo(\'ยืนยันการฝากประวัติ?\');"><i class="fa fa-pencil-square-o"></i> ฝากประวัติ</button><button type="reset" class="w3-button w3-red"><i class="fa fa-eraser"></i> เคลียร์</button></td></tr>';
+	  echo '</table><br>';
+	  echo '</form>';
+	  echo '<a href="resume.php" class="w3-button w3-yellow"><i class="fa fa-arrow-left"></i> ย้อนกลับ</a>';
+	} else {
+	  echo '<form action="resume.php" method="POST">';
+	  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
+	  echo '<tr><th width="30%">ชื่อ</th><td>'.$row['Res_Name'].'</td></tr>';
+	  echo '<tr><th>สกุล</th><td>'.$row['Res_Surname'].'</td></tr>';  
+	  echo '<tr><th>อายุ</th><td>'.$row['Res_Age'].' ปี</td></tr>';
+	  echo '<tr><th>เบอร์ติดต่อ</th><td>'.$row['Res_Phone'].'</td></tr>';
+	  echo '<tr><th>อีเมล</th><td>'.$row['Res_Email'].'</td></tr>';
+	  echo '<tr><th>ที่อยู่</th><td>'.$row['Res_Address'].'</td></tr>';
+	  echo '<tr><th>สถานะ</th><td>'.getResStatus($row['Res_Status']).'</td></tr>';
+	  echo '<tr><th>ตำแหน่งงานที่สนใจ</th><td>';
+	  $sql_occ = "SELECT * FROM occupation WHERE Occ_ID=".$row['Occ_ID'];
+	  $res_occ = $conn->query($sql_occ);
+	  $row_occ = $res_occ->fetch_assoc();
+	  echo $row_occ['Occ_Name'].'</td></tr>';
+	  echo '<tr><th>หมายเหตุ</th><td>'.$row['Res_Note'].'</td></tr>';
+	  echo '<tr><th></th><td><button class="w3-button w3-blue"><i class="fa fa-pencil-square-o"></i> ปรับปรุงประวัติ</button></td></tr>';
+	  echo '</table><br>';
+	  echo '<input type="hidden" name="type" value="11">';
+	  echo '</form>';
+	  echo '<a href="index.php" class="w3-button w3-yellow"><i class="fa fa-arrow-left"></i> กลับหน้าแรก</a>';
+	}
+} // Resume
 
 closeConDB($conn);
 ?>

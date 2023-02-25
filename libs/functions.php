@@ -57,6 +57,16 @@ function getActiveStatus($j){
 	}
 }
 
+function getResStatus($j){
+	if($j == 10){
+		return "ฝากประวัติ";
+	}else if($j == 20){
+		return "สมัครงาน";
+	}else if($j == 30){
+		return "ได้งานทำ";
+	}
+}
+
 function testInput($data) {
   $data = trim($data);
   $data = stripslashes($data);

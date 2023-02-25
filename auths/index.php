@@ -45,49 +45,19 @@ if(!isset($_SESSION['sessLoggedIn']) || $_SESSION['sessLoggedIn'] === false){
   </header>
 
   <div class="w3-row-padding w3-margin-bottom">
-    <div class="w3-quarter">
-      <div class="w3-container w3-red w3-padding-16">
-        <div class="w3-left"><i class="fa fa-comment w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3>52</h3>
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Messages</h4>
-      </div>
-    </div>
-    <div class="w3-quarter">
-      <div class="w3-container w3-blue w3-padding-16">
-        <div class="w3-left"><i class="fa fa-eye w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3>99</h3>
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Views</h4>
-      </div>
-    </div>
-    <div class="w3-quarter">
-      <div class="w3-container w3-teal w3-padding-16">
-        <div class="w3-left"><i class="fa fa-share-alt w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3>23</h3>
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Shares</h4>
-      </div>
-    </div>
-    <div class="w3-quarter">
-      <div class="w3-container w3-orange w3-text-white w3-padding-16">
-        <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3>50</h3>
-        </div>
-        <div class="w3-clear"></div>
-        <h4>Users</h4>
-      </div>
-    </div>
+  <?php
+  if(isset($_SESSION['sessUserType']) && $_SESSION['sessUserType'] == 3){
+    include '../tpls/dashboard_3.php';
+  }
+  ?>
   </div>
 
-  <div class="w3-panel">
+  <div style="height:70px;"></div>
+
+  <?php 
+  if(isset($_SESSION['sessUserType']) && $_SESSION['sessUserType'] == 2){
+  ?>
+  <!-- div class="w3-panel">
     <div class="w3-row-padding" style="margin:0 -16px">
       <div class="w3-col">
         <h5>ผลผลิตฟาร์มล่าสุด</h5>
@@ -131,9 +101,9 @@ if(!isset($_SESSION['sessLoggedIn']) || $_SESSION['sessLoggedIn'] === false){
       </div>
     </div>
   </div>
-  <hr>
+  <hr -->
 
-  <div class="w3-container">
+  <!-- div class="w3-container">
     <h5>ประกาศจ้างงานล่าสุด</h5>
     <table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">
       <tr>
@@ -163,7 +133,8 @@ if(!isset($_SESSION['sessLoggedIn']) || $_SESSION['sessLoggedIn'] === false){
     </table><br>
     <button class="w3-button w3-dark-grey">More Countries  <i class="fa fa-arrow-right"></i></button>
   </div>
-  <hr>
+  <hr -->
+  <?php } ?>
   <br>
 
   <!-- Footer -->

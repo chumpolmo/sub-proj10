@@ -144,6 +144,77 @@ if(isset($_POST['act']) &&  $_POST['act'] == 'UPPWD'){
 	echo '</div>';
 }
 
+if(isset($_POST['act']) == 'ADDRES' && $_POST['act'] == 'ADDRES'){
+	$resName = testInput($_POST['resName']);
+	$resSurname = testInput($_POST['resSurname']);
+	$resAge = testInput($_POST['resAge']);
+	$resPhone = testInput($_POST['resPhone']);
+	$resEmail = testInput($_POST['resEmail']);
+	$resAddress = testInput($_POST['resAddress']);
+	$resNote = testInput($_POST['resNote']);
+	$resStatus = $_POST['resStatus'];
+	$occId = $_POST['Occ_ID'];
+	$sql = "INSERT INTO resume (Res_ID, Res_Name, Res_Surname, Res_Age, Res_Phone, Res_Email, Res_Address, Res_Note, Res_Status, Res_Added, Res_Updated, Occ_ID, User_ID) ";
+	$sql.= "VALUES (NULL, \"$resName\", \"$resSurname\", \"$resAge\", \"$resPhone\", \"$resEmail\", \"$resAddress\", \"$resNote\", $resStatus, NOW(), NOW(), $occId, ";
+	$sql.= $_SESSION['sessUserId'].")";
+	//echo $sql;
+	$result = $conn->query($sql);
+	echo '<br><div class="w3-container">';
+	echo '<div class="w3-card w3-border w3-pale-yellow">';
+	echo '<div class="w3-center w3-padding-64">';
+	echo '<span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">ผลการฝากประวัติ</span>';
+	echo '</div>';
+	echo '<div class="w3-center w3-container">';
+	if (!$result) {
+		echo '<p>การฝากประวัติเกิดข้อผิดพลาด กรุณาตรวจสอบข้อมูลอีกครั้ง<br>';
+		echo 'กรุณารอสักครู่...</p>';
+		echo '<meta http-equiv="refresh" content="3; url=../auths/resume.php">';
+	}else{
+		echo '<p>คุณฝากประวัติสำเร็จ<br>';
+		echo 'กรุณารอสักครู่...</p>';
+		echo '<meta http-equiv="refresh" content="3; url=../auths/resume.php">';
+	}
+	echo '<br><br></div>';
+	echo '</div>';
+	echo '</div>';
+}
+
+if(isset($_POST['act']) == 'UPRES' && $_POST['act'] == 'UPRES'){
+	$resName = testInput($_POST['resName']);
+	$resSurname = testInput($_POST['resSurname']);
+	$resAge = testInput($_POST['resAge']);
+	$resPhone = testInput($_POST['resPhone']);
+	$resEmail = testInput($_POST['resEmail']);
+	$resAddress = testInput($_POST['resAddress']);
+	$resNote = testInput($_POST['resNote']);
+	$resStatus = $_POST['resStatus'];
+	$occId = $_POST['Occ_ID'];
+	$sql = "UPDATE resume SET Res_Name='".$resName."', Res_Surname='".$resSurname."', ";
+	$sql.= "Res_Age=".$resAge.", Res_Phone='".$resPhone."', Res_Email='".$resEmail."', ";
+	$sql.= "Res_Address='".$resAddress."', Res_Note='".$resNote."', Res_Updated=NOW(), ";
+	$sql.= "Occ_ID=$occId WHERE Res_ID=".$_POST['Res_ID'];
+	//echo $sql;
+	$result = $conn->query($sql);
+	echo '<br><div class="w3-container">';
+	echo '<div class="w3-card w3-border w3-pale-yellow">';
+	echo '<div class="w3-center w3-padding-64">';
+	echo '<span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">การปรับปรุงประวัติ</span>';
+	echo '</div>';
+	echo '<div class="w3-center w3-container">';
+	if (!$result) {
+		echo '<p>การปรับปรุงประวัติเกิดข้อผิดพลาด กรุณาตรวจสอบข้อมูลอีกครั้ง<br>';
+		echo 'กรุณารอสักครู่...</p>';
+		echo '<meta http-equiv="refresh" content="3; url=../auths/resume.php">';
+	}else{
+		echo '<p>คุณปรับปรุงประวัติสำเร็จ<br>';
+		echo 'กรุณารอสักครู่...</p>';
+		echo '<meta http-equiv="refresh" content="3; url=../auths/resume.php">';
+	}
+	echo '<br><br></div>';
+	echo '</div>';
+	echo '</div>';
+}
+
 if(isset($_POST['act']) == 'APPLYNOW' && $_POST['act'] == 'APPLYNOW'){
 }
 ?>
