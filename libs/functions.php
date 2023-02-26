@@ -67,6 +67,16 @@ function getResStatus($j){
 	}
 }
 
+function getJobResStatus($j){
+	if($j == 10){
+		return "รอตรวจสอบข้อมูล";
+	}else if($j == 20){
+		return "ตอบรับการสมัครงาน";
+	}else if($j == 30){
+		return "ไม่ตอบรับการสมัครงาน";
+	}
+}
+
 function testInput($data) {
   $data = trim($data);
   $data = stripslashes($data);

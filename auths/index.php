@@ -46,7 +46,11 @@ if(!isset($_SESSION['sessLoggedIn']) || $_SESSION['sessLoggedIn'] === false){
 
   <div class="w3-row-padding w3-margin-bottom">
   <?php
-  if(isset($_SESSION['sessUserType']) && $_SESSION['sessUserType'] == 3){
+  if(isset($_SESSION['sessUserType']) && $_SESSION['sessUserType'] == 1){
+    include '../tpls/dashboard_1.php';
+  }else if(isset($_SESSION['sessUserType']) && $_SESSION['sessUserType'] == 2){
+    include '../tpls/dashboard_2.php';
+  }else if(isset($_SESSION['sessUserType']) && $_SESSION['sessUserType'] == 3){
     include '../tpls/dashboard_3.php';
   }
   ?>

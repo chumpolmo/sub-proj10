@@ -193,7 +193,6 @@ if(isset($_POST['act']) == 'UPRES' && $_POST['act'] == 'UPRES'){
 	$sql.= "Res_Age=".$resAge.", Res_Phone='".$resPhone."', Res_Email='".$resEmail."', ";
 	$sql.= "Res_Address='".$resAddress."', Res_Note='".$resNote."', Res_Updated=NOW(), ";
 	$sql.= "Occ_ID=$occId WHERE Res_ID=".$_POST['Res_ID'];
-	//echo $sql;
 	$result = $conn->query($sql);
 	echo '<br><div class="w3-container">';
 	echo '<div class="w3-card w3-border w3-pale-yellow">';
@@ -215,6 +214,39 @@ if(isset($_POST['act']) == 'UPRES' && $_POST['act'] == 'UPRES'){
 	echo '</div>';
 }
 
-if(isset($_POST['act']) == 'APPLYNOW' && $_POST['act'] == 'APPLYNOW'){
+if(isset($_GET['act']) == 'APPLYNOW' && $_GET['act'] == 'APPLYNOW'){
+	$job_id = $_GET['job_id'];
+	$sql = "SELECT * FROM resume WHERE User_ID=".$_SESSION['sessUserId'];
+	$result = $conn->query($sql);
+	echo '<br><div class="w3-container">';
+	echo '<div class="w3-card w3-border w3-pale-yellow">';
+	echo '<div class="w3-center w3-padding-64">';
+	echo '<span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">ผลการสมัครงาน</span>';
+	echo '</div>';
+	echo '<div class="w3-center w3-container">';
+	if ($result->num_rows > 0) {
+		$row = $result->fetch_assoc();
+		$sql_jr = "INSERT INTO jobs_resume (Job_ID, Res_ID, JobRes_Status, JobRes_Note) ";
+		$sql_jr.= "VALUES($job_id, ".$row['Res_ID'].", 10, '')"; // รอตรวจสอบข้อมูล
+		$res_jr = $conn->query($sql_jr);
+		if($res_jr){
+			$sql_r = "UPDATE resume SET Res_Status=20, Res_Updated=NOW() WHERE Res_ID=".$row['Res_ID']; // สมัครงาน
+			$res_r = $conn->query($sql_r);
+			echo '<p>การสมัครงานสำเร็จ กรุณารอการตอบรับจากผู้รับสมัคร<br>';
+			echo 'กรุณารอสักครู่...</p>';
+			echo '<meta http-equiv="refresh" content="3; url=../auths/aj_history.php">';
+		}else{
+			echo '<p>การสมัครงานพบข้อผิดพลาด กรุณาตรวจสอบข้อมูลอีกครั้ง<br>';
+			echo 'กรุณารอสักครู่...</p>';
+			echo '<meta http-equiv="refresh" content="3; url=../auths/applyjob.php">';
+		}
+	}else{
+		echo '<p>กรุณาฝากประวัติก่อนดำเนินการสมัครงาน ตรวจสอบข้อมูลอีกครั้ง<br>';
+		echo 'กรุณารอสักครู่...</p>';
+		echo '<meta http-equiv="refresh" content="3; url=../auths/resume.php">';
+	}
+	echo '<br><br></div>';
+	echo '</div>';
+	echo '</div>';
 }
 ?>

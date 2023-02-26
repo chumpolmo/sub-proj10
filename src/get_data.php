@@ -98,12 +98,12 @@ if($_POST['type'] == 4){
 		else if ($pagenum > $nop) {
 			$pagenum = $nop;
 		}
-	  for($p = 0; $p < $nop; $p++){
-	  	if($pagenum == ($p+1))
+	    for($p = 0; $p < $nop; $p++){
+	  	  if($pagenum == ($p+1))
   			echo '<div class="w3-bar-item w3-button">'.($p+1).'</div>';
-  		else
+  		  else
   			echo '<a class="w3-bar-item w3-button" onclick="getData(4, '.($p+1).','.($p * _PER_PAGE_1).',\''.$key.'\')">'.($p+1).'</a>';
-  	}
+  	    }
 		echo '</div></div>';
 		echo '</div>';
 	} else {
@@ -134,7 +134,7 @@ if($_POST['type'] == 41){
   echo '<tr><th>เริ่มเผยแพร่</th><td>'.$row['Job_Added'].'</td><td></td><td></td></tr>';
   echo '<tr><th>ปรับปรุงล่าสุด</th><td>'.$row['Job_Updated'].'</td><td></td><td></td></tr>';
 	echo '<tr><th>ผู้เผยแพร่ข้อมูล</th><td>'.$row['User_Fullname'].'</td><td></td><td></td></tr>';
-  echo '<tr><td colspan="4"><div class="w3-button w3-right w3-green"><a href="proc_data.php?act=APPLYNOW&job_id='.$row['Job_ID'].'"><i class="fa fa-paper-plane"></i> ยืนยันการสมัครงาน</a></div></td></tr>';
+  echo '<tr><td colspan="4"><div class="w3-button w3-right w3-pale-yellow"><i class="fa fa-paper-plane"></i> *** กรุณาเข้าสู่ระบบ เพื่อยืนยันการสมัครงาน ***</div></td></tr>';
   echo '</table>';
 }
 
@@ -281,7 +281,7 @@ if(isset($_POST['type']) && $_POST['type'] == 9){
 
 if(isset($_POST['type']) && ($_POST['type'] == 10 || $_POST['type'] == 11)){
 	$usrEmail = $_SESSION['sessUserEmail'];
-	$sql = "SELECT U.User_ID, R.* FROM user AS U INNER JOIN Resume AS R ON ";
+	$sql = "SELECT U.User_ID, R.* FROM user AS U INNER JOIN resume AS R ON ";
 	$sql.= "U.User_Email Like \"".$usrEmail."\" AND (U.User_ID=R.User_ID)";
 	$result = $conn->query($sql);
 	$row = $result->fetch_assoc();
@@ -358,6 +358,196 @@ if(isset($_POST['type']) && ($_POST['type'] == 10 || $_POST['type'] == 11)){
 	  echo '<a href="index.php" class="w3-button w3-yellow"><i class="fa fa-arrow-left"></i> กลับหน้าแรก</a>';
 	}
 } // Resume
+
+if(isset($_POST['type']) && ($_POST['type'] == 12)){
+	$key = "";
+	$cond = "";
+	if(isset($_POST['key']) && !empty($_POST['key'])){
+		$key = $_POST['key'];
+		$cond = "AND (J.Job_Title LIKE \"%$key%\" OR J.Job_Description LIKE \"%$key%\" OR J.Job_Note LIKE \"%$key%\")";
+	}
+	if(isset($_POST['pagenum'])){
+		$pagenum = $_POST['pagenum'];
+	}
+	$st = $_POST['st'];
+
+	$sql = "SELECT J.Job_ID, J.Job_Title, F.Farm_Name FROM jobs AS J INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID $cond LIMIT $st, "._PER_PAGE_1;
+	$result = $conn->query($sql);
+
+	if ($result->num_rows > 0) {
+	  echo '<div class="w3-container">';
+	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$result->num_rows.' รายการ';
+	  echo '</div>';
+	  echo '<div class="w3-container">';
+	  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
+	  echo '<tr><th>ตำแหน่ง</th><th>ฟาร์ม</th><th>รายละเอียด</th><th>สมัครงาน</th></tr>';
+	  while($row = $result->fetch_assoc()) {
+    	echo '<tr><td>'.$row['Job_Title'].'</td>';
+   	 	echo '<td>'.$row['Farm_Name'].'</td>';
+   	 	echo '<td><a onClick="document.getElementById(\'jd'.$row['Job_ID'].'\').style.display=\'block\'" class="w3-button w3-green w3-center">รายละเอียด</a>';
+
+   	 	/****/
+    	echo '<div id="jd'.$row['Job_ID'].'" class="w3-modal">';
+    	echo '<div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:640px">';
+      	echo '<div class="w3-center">';
+        echo '<span onclick="document.getElementById(\'jd'.$row['Job_ID'].'\').style.display=\'none\'" class="w3-button w3-xlarge w3-hover-red w3-display-topright" title="Close Modal">&times;</span>';
+      	echo '</div>';
+      	echo '<div class="w3-container">';
+        echo '<p class="w3-container w3-padding">';
+
+		$sql_jd = "SELECT J.*, F.*, U.User_Fullname FROM jobs AS J ";
+		$sql_jd.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID AND Job_ID=".$row['Job_ID']." ";
+		$sql_jd.= "INNER JOIN user AS U ON F.User_ID=U.User_ID";
+		$res_jd = $conn->query($sql_jd);
+		$row_jd = $res_jd->fetch_assoc();
+
+  		echo '<h5><i class="fa fa-vcard"></i> ตำแหน่งงาน: '.$row_jd['Job_Title'].'</h5>';
+  		echo '<table class="w3-table-all w3-hoverable">';
+  		echo '<tr class="w3-khaki"><th colspan="2">รายละเอียดงานรับสมัคร</th><th colspan="2">หน่วยงานรับสมัคร</th></tr>';
+  		echo '</td><th>ตำแหน่งงาน</th><td>'.$row_jd['Job_Title'].'</td><th>ชื่อหน่วยงาน</th><td>'.$row_jd['Farm_Name'].'</td></tr>';
+  		echo '<tr><th>รายละเอียดงาน</th><td>'.$row_jd['Job_Description'].'</td><th>รายละเอียด</th><td>'.$row_jd['Farm_Description'].'</td></tr>';
+  		echo '<tr><th>ค่าจ้างต่อเดือน</th><td>'.$row_jd['Job_Salary'].'</td><th>ข้อมูลติดต่อ</th><td>'.$row_jd['Farm_Address'].$row_jd['Farm_Email'].$row_jd['Farm_Phone'].'</td></tr>';
+  		echo '<tr><th>ติดต่องาน</th><td>'.$row_jd['Job_Phone'].'</td><td></td><td></td></tr>';
+  		echo '<tr><th>หมายเหตุ</th><td>'.$row_jd['Job_Note'].'</td><td></td><td></td></tr>';
+  		echo '<tr><th>สถานะตำแหน่งงาน</th><td>'.getJobStatus($row_jd['Job_Status']).'</td><td></td><td></td></tr>';
+  		echo '<tr><th>เริ่มเผยแพร่</th><td>'.$row_jd['Job_Added'].'</td><td></td><td></td></tr>';
+  		echo '<tr><th>ปรับปรุงล่าสุด</th><td>'.$row_jd['Job_Updated'].'</td><td></td><td></td></tr>';
+		echo '<tr><th>ผู้เผยแพร่ข้อมูล</th><td>'.$row_jd['User_Fullname'].'</td><td></td><td></td></tr>';
+  		echo '</table>';
+        echo '</p>';       
+      	echo '</div>';
+      	echo '<div class="w3-container w3-border-top w3-padding-16 w3-light-grey">';
+        echo '<button onclick="document.getElementById(\'jd'.$row['Job_ID'].'\').style.display=\'none\'" type="button" class="w3-button w3-red">'._CANCEL.'</button>';
+      	echo '</div></div></div>';
+   	 	/****/
+
+   	 	echo '</td>';
+   	 	// ผู้ใช้สามารถสมัครงานได้มากกว่า 1 ตำแหน่ง
+   	 	//$sql_j = "SELECT JR.*,R.User_ID FROM jobs_resume AS JR INNER JOIN resume AS R ON JR.Res_ID=R.Res_ID AND JR.Job_ID=".$row['Job_ID']." AND R.User_ID=".$_SESSION['sessUserId'];
+   	 	// ผู้ใช้สามารถสมัครงานได้เพียง 1 ตำแหน่ง
+   	 	$sql_j = "SELECT JR.*,R.User_ID FROM jobs_resume AS JR INNER JOIN resume AS R ON JR.Res_ID=R.Res_ID AND R.User_ID=".$_SESSION['sessUserId'];
+   	 	$res_j = $conn->query($sql_j);
+    	echo '<td>';
+    	if ($res_j->num_rows > 0) {
+    		echo "-";
+    	}else{
+    		echo '<a href="../src/proc_data.php?act=APPLYNOW&job_id='.$row['Job_ID'].'" class="w3-button w3-yellow w3-center" onClick="return confirmInfo(\'ยืนยันการสมัครงาน?\')">สมัครงาน</a>';
+    	}
+    	echo '</td></tr>';
+	  }
+	  echo '</table>';
+	  echo '</div>';
+	}
+	echo '<div class="w3-container">';
+	echo '<div class="w3-center">';
+	echo '<div class="w3-bar w3-border-bottom w3-border-left w3-border-right">';
+	echo '<div class="w3-bar-item w3-button">หน้า</div>';
+	$nop = ceil($result->num_rows / _PER_PAGE_1);
+	if($nop < 1){
+		$nop = 1;
+	}
+	$pagenum = 1;
+	if ($pagenum < 1) {
+		$pagenum = 1;
+	}
+	else if ($pagenum > $nop) {
+		$pagenum = $nop;
+	}
+	for($p = 0; $p < $nop; $p++){
+	  if($pagenum == ($p+1))
+  		echo '<div class="w3-bar-item w3-button">'.($p+1).'</div>';
+  	  else
+  		echo '<a class="w3-bar-item w3-button" onclick="getData(12, '.($p+1).','.($p * _PER_PAGE_1).',\''.$key.'\')">'.($p+1).'</a>';
+  	}
+	echo '</div></div>';
+	echo '</div>';
+} // Apply Job
+
+if(isset($_POST['type']) && ($_POST['type'] == 14)){
+	$key = "";
+	if(isset($_POST['pagenum'])){
+		$pagenum = $_POST['pagenum'];
+	}
+	$st = $_POST['st'];
+
+	$sql = "SELECT JR.*,R.User_ID FROM jobs_resume AS JR INNER JOIN resume AS R ON JR.Res_ID=R.Res_ID AND R.User_ID=".$_SESSION['sessUserId']." LIMIT $st, "._PER_PAGE_1;
+	$result = $conn->query($sql);
+	if ($result->num_rows > 0) {
+	  echo '<div class="w3-container">';
+	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$result->num_rows.' รายการ';
+	  echo '</div>';
+	  echo '<div class="w3-container">';
+	  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
+	  echo '<tr><th>ตำแหน่ง</th><th>ฟาร์ม</th><th>รายละเอียด</th><th>ผลการสมัครงาน</th></tr>';
+	  while($row = $result->fetch_assoc()) {
+   	 	$sql_j = "SELECT J.*, F.*, U.User_Fullname FROM jobs AS J INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID AND J.Job_ID=".$row['Job_ID']." ";
+   	 	$sql_j.= "INNER JOIN user AS U ON F.User_ID=U.User_ID";
+   	 	$res_j = $conn->query($sql_j);
+   	 	$row_j = $res_j->fetch_assoc();
+    	echo '<tr><td>'.$row_j['Job_Title'].'</td>';
+   	 	echo '<td>'.$row_j['Farm_Name'].'</td>';
+   	 	echo '<td><a onClick="document.getElementById(\'jd'.$row_j['Job_ID'].'\').style.display=\'block\'" class="w3-button w3-green w3-center">รายละเอียด</a>';
+
+   	 	/****/
+    	echo '<div id="jd'.$row_j['Job_ID'].'" class="w3-modal">';
+    	echo '<div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:640px">';
+      	echo '<div class="w3-center">';
+        echo '<span onclick="document.getElementById(\'jd'.$row_j['Job_ID'].'\').style.display=\'none\'" class="w3-button w3-xlarge w3-hover-red w3-display-topright" title="Close Modal">&times;</span>';
+      	echo '</div>';
+      	echo '<div class="w3-container">';
+        echo '<p class="w3-container w3-padding">';
+  		echo '<h5><i class="fa fa-vcard"></i> ตำแหน่งงาน: '.$row_j['Job_Title'].'</h5>';
+  		echo '<table class="w3-table-all w3-hoverable">';
+  		echo '<tr class="w3-khaki"><th colspan="2">รายละเอียดงานรับสมัคร</th><th colspan="2">หน่วยงานรับสมัคร</th></tr>';
+  		echo '</td><th>ตำแหน่งงาน</th><td>'.$row_j['Job_Title'].'</td><th>ชื่อหน่วยงาน</th><td>'.$row_j['Farm_Name'].'</td></tr>';
+  		echo '<tr><th>รายละเอียดงาน</th><td>'.$row_j['Job_Description'].'</td><th>รายละเอียด</th><td>'.$row_j['Farm_Description'].'</td></tr>';
+  		echo '<tr><th>ค่าจ้างต่อเดือน</th><td>'.$row_j['Job_Salary'].'</td><th>ข้อมูลติดต่อ</th><td>'.$row_j['Farm_Address'].$row_j['Farm_Email'].$row_j['Farm_Phone'].'</td></tr>';
+  		echo '<tr><th>ติดต่องาน</th><td>'.$row_j['Job_Phone'].'</td><td></td><td></td></tr>';
+  		echo '<tr><th>หมายเหตุ</th><td>'.$row_j['Job_Note'].'</td><td></td><td></td></tr>';
+  		echo '<tr><th>สถานะตำแหน่งงาน</th><td>'.getJobStatus($row_j['Job_Status']).'</td><td></td><td></td></tr>';
+  		echo '<tr><th>เริ่มเผยแพร่</th><td>'.$row_j['Job_Added'].'</td><td></td><td></td></tr>';
+  		echo '<tr><th>ปรับปรุงล่าสุด</th><td>'.$row_j['Job_Updated'].'</td><td></td><td></td></tr>';
+		echo '<tr><th>ผู้เผยแพร่ข้อมูล</th><td>'.$row_j['User_Fullname'].'</td><td></td><td></td></tr>';
+  		echo '</table>';
+        echo '</p>';       
+      	echo '</div>';
+      	echo '<div class="w3-container w3-border-top w3-padding-16 w3-light-grey">';
+        echo '<button onclick="document.getElementById(\'jd'.$row['Job_ID'].'\').style.display=\'none\'" type="button" class="w3-button w3-red">'._CANCEL.'</button>';
+      	echo '</div></div></div>';
+   	 	/****/
+
+   	 	echo '</td>';
+    	echo '<td>';
+    	echo '<a class="w3-center">'.getJobResStatus($row['JobRes_Status']).'</a>';
+    	echo '</td></tr>';
+	  }
+	  echo '</table>';
+	  echo '</div>';
+	}
+	echo '<div class="w3-container">';
+	echo '<div class="w3-center">';
+	echo '<div class="w3-bar w3-border-bottom w3-border-left w3-border-right">';
+	echo '<div class="w3-bar-item w3-button">หน้า</div>';
+	$nop = ceil($result->num_rows / _PER_PAGE_1);
+	if($nop < 1){
+		$nop = 1;
+	}
+	$pagenum = 1;
+	if ($pagenum < 1) {
+		$pagenum = 1;
+	}
+	else if ($pagenum > $nop) {
+		$pagenum = $nop;
+	}
+	for($p = 0; $p < $nop; $p++){
+	  if($pagenum == ($p+1))
+  		echo '<div class="w3-bar-item w3-button">'.($p+1).'</div>';
+  	  else
+  		echo '<a class="w3-bar-item w3-button" onclick="getData(14, '.($p+1).','.($p * _PER_PAGE_1).',\''.$key.'\')">'.($p+1).'</a>';
+  	}
+	echo '</div></div>';
+	echo '</div>';
+} // Apply job history
 
 closeConDB($conn);
 ?>
