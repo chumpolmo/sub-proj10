@@ -33,12 +33,12 @@ if($_POST['type'] == 2){
 }
 
 if($_POST['type'] == 3){
-	$sql = "SELECT count(Res_ID) AS Res_Num1 FROM resume";
+	$sql = "SELECT count(Res_ID) AS Res_Num1 FROM jobs_resume WHERE JobRes_Status=10";
 	$result = $conn->query($sql);
 	$row = $result->fetch_assoc();
 	echo "{\"apply\":".$row['Res_Num1'].",";
 
-	$sql = "SELECT count(Res_ID) AS Res_Num2 FROM resume WHERE Res_Status=20";
+	$sql = "SELECT count(Res_ID) AS Res_Num2 FROM jobs_resume WHERE JobRes_Status=20";
 	$result = $conn->query($sql);
 	$row = $result->fetch_assoc();
 	echo "\"accept\":".$row['Res_Num2'].",";
