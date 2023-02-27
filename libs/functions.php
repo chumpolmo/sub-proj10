@@ -8,23 +8,13 @@ function connectDB(){
 	// Create connection
 	$conn = new mysqli($servername, $username, $password, $database);
 
+	$conn->query("SET sql_mode = 'allow_invalid_dates'");
+
 	// Check connection
 	if ($conn->connect_error) {
   		die("Connection failed: " . $conn->connect_error);
 	}
 	return $conn;
-}
-
-function exeQuery($sql, $conn){
-	$result = $conn->query($sql);
-
-	if ($result->num_rows > 0) {
-  		//while($row = $result->fetch_assoc()) {
-    	//	echo "id: " . $row["id"]. " - Name: " . $row["firstname"]. " " . $row["lastname"]. "<br>";
-  		//}
-	} else {
-  		return false;
-	}
 }
 
 function closeConDB($conn){
@@ -69,11 +59,29 @@ function getResStatus($j){
 
 function getJobResStatus($j){
 	if($j == 10){
-		return "รอตรวจสอบข้อมูล";
+		return "สมัครงาน";
 	}else if($j == 20){
-		return "ตอบรับการสมัครงาน";
-	}else if($j == 30){
-		return "ไม่ตอบรับการสมัครงาน";
+		return "ตอบรับเข้าทำงาน";
+	}
+}
+
+function getPrefix($j){
+	if($j == 1){
+		return "นาย";
+	}else if($j == 2){
+		return "นางสาว";
+	}else if($j == 3){
+		return "นาง";
+	}
+}
+
+function getSex($j){
+	if($j == 1){
+		return "ผู้ชาย";
+	}else if($j == 2){
+		return "ผู้หญิง";
+	}else if($j == 3){
+		return "ไม่ระบุ";
 	}
 }
 

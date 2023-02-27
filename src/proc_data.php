@@ -11,8 +11,9 @@ if(isset($_POST['act']) && $_POST['act'] == 'REGIS'){
 	$usrEmail = testInput($_POST['usrEmail']);
 	$usrPwd = testInput($_POST['usrPwd']);
 	$usrType = $_POST['usrType'];
+
 	$sql = "INSERT INTO user (User_ID, User_Email, User_Password, User_Fullname, User_Type, User_Active, User_Added, User_Updated) ";
-	$sql.= "VALUES (NULL, \"$usrEmail\", \"$usrPwd\", \"\", $usrType, false, NOW(), NOW())";
+	$sql.= "VALUES (NULL, \"$usrEmail\", \"$usrPwd\", \"\", $usrType, false, NOW(), '0000-00-00 00:00:00')";
 	$result = $conn->query($sql);
 	echo '<br><div class="w3-container">';
 	echo '<div class="w3-card w3-border w3-pale-yellow">';
@@ -145,17 +146,18 @@ if(isset($_POST['act']) &&  $_POST['act'] == 'UPPWD'){
 }
 
 if(isset($_POST['act']) == 'ADDRES' && $_POST['act'] == 'ADDRES'){
+	$resPrefix = $_POST['resPrefix'];
 	$resName = testInput($_POST['resName']);
 	$resSurname = testInput($_POST['resSurname']);
 	$resAge = testInput($_POST['resAge']);
+	$resSex = $_POST['resSex'];
 	$resPhone = testInput($_POST['resPhone']);
 	$resEmail = testInput($_POST['resEmail']);
 	$resAddress = testInput($_POST['resAddress']);
 	$resNote = testInput($_POST['resNote']);
-	$resStatus = $_POST['resStatus'];
 	$occId = $_POST['Occ_ID'];
-	$sql = "INSERT INTO resume (Res_ID, Res_Name, Res_Surname, Res_Age, Res_Phone, Res_Email, Res_Address, Res_Note, Res_Status, Res_Added, Res_Updated, Occ_ID, User_ID) ";
-	$sql.= "VALUES (NULL, \"$resName\", \"$resSurname\", \"$resAge\", \"$resPhone\", \"$resEmail\", \"$resAddress\", \"$resNote\", $resStatus, NOW(), NOW(), $occId, ";
+	$sql = "INSERT INTO resume (Res_ID, Res_Prefix, Res_Name, Res_Surname, Res_Age, Res_Sex, Res_Phone, Res_Email, Res_Address, Res_Note, Res_Added, Res_Updated, Occ_ID, User_ID) ";
+	$sql.= "VALUES (NULL, $resPrefix, \"$resName\", \"$resSurname\", \"$resAge\", $resSex, \"$resPhone\", \"$resEmail\", \"$resAddress\", \"$resNote\", NOW(), NOW(), $occId, ";
 	$sql.= $_SESSION['sessUserId'].")";
 	//echo $sql;
 	$result = $conn->query($sql);
@@ -180,17 +182,18 @@ if(isset($_POST['act']) == 'ADDRES' && $_POST['act'] == 'ADDRES'){
 }
 
 if(isset($_POST['act']) == 'UPRES' && $_POST['act'] == 'UPRES'){
+	$resPrefix = $_POST['resPrefix'];
 	$resName = testInput($_POST['resName']);
 	$resSurname = testInput($_POST['resSurname']);
 	$resAge = testInput($_POST['resAge']);
+	$resSex = $_POST['resSex'];
 	$resPhone = testInput($_POST['resPhone']);
 	$resEmail = testInput($_POST['resEmail']);
 	$resAddress = testInput($_POST['resAddress']);
 	$resNote = testInput($_POST['resNote']);
-	$resStatus = $_POST['resStatus'];
 	$occId = $_POST['Occ_ID'];
-	$sql = "UPDATE resume SET Res_Name='".$resName."', Res_Surname='".$resSurname."', ";
-	$sql.= "Res_Age=".$resAge.", Res_Phone='".$resPhone."', Res_Email='".$resEmail."', ";
+	$sql = "UPDATE resume SET Res_Prefix=$resPrefix, Res_Name='".$resName."', Res_Surname='".$resSurname."', ";
+	$sql.= "Res_Age=".$resAge.", Res_Sex=".$resSex.", Res_Phone='".$resPhone."', Res_Email='".$resEmail."', ";
 	$sql.= "Res_Address='".$resAddress."', Res_Note='".$resNote."', Res_Updated=NOW(), ";
 	$sql.= "Occ_ID=$occId WHERE Res_ID=".$_POST['Res_ID'];
 	$result = $conn->query($sql);
@@ -226,12 +229,10 @@ if(isset($_GET['act']) == 'APPLYNOW' && $_GET['act'] == 'APPLYNOW'){
 	echo '<div class="w3-center w3-container">';
 	if ($result->num_rows > 0) {
 		$row = $result->fetch_assoc();
-		$sql_jr = "INSERT INTO jobs_resume (Job_ID, Res_ID, JobRes_Status, JobRes_Note) ";
-		$sql_jr.= "VALUES($job_id, ".$row['Res_ID'].", 10, '')"; // รอตรวจสอบข้อมูล
+		$sql_jr = "INSERT INTO jobs_resume (Job_ID, Res_ID, JobRes_Status, Apply_Date, Accept_Date) ";
+		$sql_jr.= "VALUES($job_id, ".$row['Res_ID'].", 10, NOW(), '0000-00-00 00:00:00');"; // สมัครงาน
 		$res_jr = $conn->query($sql_jr);
 		if($res_jr){
-			$sql_r = "UPDATE resume SET Res_Status=20, Res_Updated=NOW() WHERE Res_ID=".$row['Res_ID']; // สมัครงาน
-			$res_r = $conn->query($sql_r);
 			echo '<p>การสมัครงานสำเร็จ กรุณารอการตอบรับจากผู้รับสมัคร<br>';
 			echo 'กรุณารอสักครู่...</p>';
 			echo '<meta http-equiv="refresh" content="3; url=../auths/aj_history.php">';
@@ -249,4 +250,28 @@ if(isset($_GET['act']) == 'APPLYNOW' && $_GET['act'] == 'APPLYNOW'){
 	echo '</div>';
 	echo '</div>';
 }
+
+if(isset($_GET['act']) && $_GET['act'] == 'RESCAN'){
+	$job_id = $_GET['job_id'];
+	$res_id = $_GET['res_id'];
+	$sql = "DELETE FROM jobs_resume WHERE Job_ID=".$job_id." AND Res_ID=".$res_id;
+	$result = $conn->query($sql);
+	echo '<br><div class="w3-container">';
+	echo '<div class="w3-card w3-border w3-pale-yellow">';
+	echo '<div class="w3-center w3-padding-64">';
+	echo '<span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">การยกเลิกการสมัครงาน</span>';
+	echo '</div>';
+	echo '<div class="w3-center w3-container">';
+	if ($result) {
+		echo '<p>การยกเลิกการสมัครงานสำเร็จ<br>';
+		echo 'กรุณารอสักครู่...</p>';
+	}else{
+		echo '<p>กรุณาฝากประวัติก่อนดำเนินการสมัครงาน ตรวจสอบข้อมูลอีกครั้ง<br>';
+		echo 'กรุณารอสักครู่...</p>';
+	}
+	echo '<meta http-equiv="refresh" content="3; url=../auths/applyjob.php">';
+	echo '<br><br></div>';
+	echo '</div>';
+	echo '</div>';
+} // Resume Cancel
 ?>

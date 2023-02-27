@@ -287,35 +287,53 @@ if(isset($_POST['type']) && ($_POST['type'] == 10 || $_POST['type'] == 11)){
 	$row = $result->fetch_assoc();
 	if ($result->num_rows <= 0 || $_POST['type'] == 11) {
 	  echo '<form action="../src/proc_data.php" method="POST">';
-	  $optResStatus = "";
+	  $optPrefix = "";
+	  $optSex = "";
+	  $pSel1 = $pSel2 = $pSel3 = "";
+	  $sSel1 = $sSel2 = $sSel3 = "";
 	  if($_POST['type'] == 11){
-	  	if(isset($row)){
-	  	  if($row['Res_Status'] == 10)
-	  		$optResStatus.= '<option value="10" selected>ฝากประวัติ</option>';	
-	  	  }else if($row['Res_Status'] == 20){
-	  		$optResStatus.= '<option value="20" disabled>สมัครงาน</option>';
-	  	  }else if($row['Res_Status'] == 30){
-	  		$optResStatus.= '<option value="30" disabled>ได้งานทำ</option>';
-	  	  }
+	  	if($row['Res_Prefix'] == 1) $pSel1 = "selected";
+	  	else if($row['Res_Prefix'] == 2) $pSel2 = "selected";
+	  	else if($row['Res_Prefix'] == 3) $pSel3 = "selected";
+
+	  	if($row['Res_Sex'] == 1) $sSel1 = "selected";
+	  	else if($row['Res_Sex'] == 2) $sSel2 = "selected";
+	  	else if($row['Res_Sex'] == 3) $sSel3 = "selected";
+
+		$optPrefix = '<option value="">-ระบุคำนำหน้า-</option>';
+	  	$optPrefix.= '<option value="1" '.$pSel1.'>นาย</option>';
+	  	$optPrefix.= '<option value="2" '.$pSel2.'>นางสาว</option>';
+	  	$optPrefix.= '<option value="3" '.$pSel3.'>นาง</option>';
+		$optSex = '<option value="" selected>-ระบุเพศ-</option>';
+	  	$optSex.= '<option value="1" '.$sSel1.'>ชาย</option>';
+	  	$optSex.= '<option value="2" '.$sSel2.'>หญิง</option>';
+	  	$optSex.= '<option value="3" '.$sSel3.'>ไม่ระบุ</option>';
 	  	echo '<input type="hidden" name="Res_ID" value="'.$row['Res_ID'].'">';
 	  	echo '<input type="hidden" name="act" value="UPRES">';
 	  }else{
 		echo '<input type="hidden" name="act" value="ADDRES">';
-		$optResStatus = '<option value="0" disabled>-ระบุสถานะ-</option>';
-	  	$optResStatus.= '<option value="10" selected>ฝากประวัติ</option>';
-	  	$optResStatus.= '<option value="20" disabled>สมัครงาน</option>';
-	  	$optResStatus.= '<option value="30" disabled>ได้งานทำ</option>';
+		$optPrefix = '<option value="" selected>-ระบุคำนำหน้า-</option>';
+	  	$optPrefix.= '<option value="1">นาย</option>';
+	  	$optPrefix.= '<option value="2">นางสาว</option>';
+	  	$optPrefix.= '<option value="3">นาง</option>';
+		$optSex = '<option value="" selected>-ระบุเพศ-</option>';
+	  	$optSex.= '<option value="1">ชาย</option>';
+	  	$optSex.= '<option value="2">หญิง</option>';
+	  	$optSex.= '<option value="3">ไม่ระบุ</option>';
 	  }
 	  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
+	  echo '<tr><th>คำนำหน้า</th><td>';
+	  echo '<select class="w3-select w3-border" name="resPrefix" required>'.$optPrefix.'</select>';
+	  echo '</td></tr>';
 	  echo '<tr><th width="30%">ชื่อ</th><td><input type="text" name="resName" class="w3-input w3-border" value="'.$row['Res_Name'].'" required></td></tr>';
 	  echo '<tr><th>สกุล</th><td><input type="text" name="resSurname" class="w3-input w3-border" value="'.$row['Res_Surname'].'" required></td></tr>';  
 	  echo '<tr><th>อายุ</th><td><input type="number" name="resAge" value="'.$row['Res_Age'].'" style="width:25%;" required> ปี</td></tr>';
+	  echo '<tr><th>เพศ</th><td>';
+	  echo '<select class="w3-select w3-border" name="resSex" required>'.$optSex.'</select>';
+	  echo '</td></tr>';
 	  echo '<tr><th>เบอร์ติดต่อ</th><td><input type="text" name="resPhone" class="w3-input w3-border" value="'.$row['Res_Phone'].'" required></td></tr>';
 	  echo '<tr><th>อีเมล</th><td><input type="text" name="resEmail" class="w3-input w3-border" value="'.$row['Res_Email'].'"></td></tr>';
 	  echo '<tr><th>ที่อยู่</th><td><textarea name="resAddress" class="w3-input w3-border">'.$row['Res_Address'].'</textarea></td></tr>';
-	  echo '<tr><th>สถานะ</th><td>';
-	  echo '<select class="w3-select w3-border" name="resStatus">'.$optResStatus.'</select>';
-	  echo '</td></tr>';
 	  echo '<tr><th>ตำแหน่งงานที่สนใจ</th><td>';
 	  echo '<select class="w3-select w3-border" name="Occ_ID">';
 	  echo '<option value="0">-ระบุตำแหน่งงานที่สนใจ-</option>';
@@ -338,13 +356,14 @@ if(isset($_POST['type']) && ($_POST['type'] == 10 || $_POST['type'] == 11)){
 	} else {
 	  echo '<form action="resume.php" method="POST">';
 	  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
+	  echo '<tr><th>คำนำหน้า</th><td>'.getPrefix($row['Res_Prefix']).'</td></tr>';
 	  echo '<tr><th width="30%">ชื่อ</th><td>'.$row['Res_Name'].'</td></tr>';
 	  echo '<tr><th>สกุล</th><td>'.$row['Res_Surname'].'</td></tr>';  
 	  echo '<tr><th>อายุ</th><td>'.$row['Res_Age'].' ปี</td></tr>';
+	  echo '<tr><th>เพศ</th><td>'.getSex($row['Res_Sex']).'</td></tr>';
 	  echo '<tr><th>เบอร์ติดต่อ</th><td>'.$row['Res_Phone'].'</td></tr>';
 	  echo '<tr><th>อีเมล</th><td>'.$row['Res_Email'].'</td></tr>';
 	  echo '<tr><th>ที่อยู่</th><td>'.$row['Res_Address'].'</td></tr>';
-	  echo '<tr><th>สถานะ</th><td>'.getResStatus($row['Res_Status']).'</td></tr>';
 	  echo '<tr><th>ตำแหน่งงานที่สนใจ</th><td>';
 	  $sql_occ = "SELECT * FROM occupation WHERE Occ_ID=".$row['Occ_ID'];
 	  $res_occ = $conn->query($sql_occ);
@@ -423,13 +442,14 @@ if(isset($_POST['type']) && ($_POST['type'] == 12)){
 
    	 	echo '</td>';
    	 	// ผู้ใช้สามารถสมัครงานได้มากกว่า 1 ตำแหน่ง
-   	 	//$sql_j = "SELECT JR.*,R.User_ID FROM jobs_resume AS JR INNER JOIN resume AS R ON JR.Res_ID=R.Res_ID AND JR.Job_ID=".$row['Job_ID']." AND R.User_ID=".$_SESSION['sessUserId'];
+   	 	$sql_j = "SELECT JR.*,R.User_ID FROM jobs_resume AS JR INNER JOIN resume AS R ON JR.Res_ID=R.Res_ID AND JR.Job_ID=".$row['Job_ID']." AND R.User_ID=".$_SESSION['sessUserId'];
    	 	// ผู้ใช้สามารถสมัครงานได้เพียง 1 ตำแหน่ง
-   	 	$sql_j = "SELECT JR.*,R.User_ID FROM jobs_resume AS JR INNER JOIN resume AS R ON JR.Res_ID=R.Res_ID AND R.User_ID=".$_SESSION['sessUserId'];
+   	 	//$sql_j = "SELECT JR.*,R.User_ID FROM jobs_resume AS JR INNER JOIN resume AS R ON JR.Res_ID=R.Res_ID AND R.User_ID=".$_SESSION['sessUserId'];
    	 	$res_j = $conn->query($sql_j);
     	echo '<td>';
     	if ($res_j->num_rows > 0) {
-    		echo "-";
+    		$row_j = $res_j->fetch_assoc();
+    		echo '<a href="../src/proc_data.php?act=RESCAN&job_id='.$row['Job_ID'].'&res_id='.$row_j['Res_ID'].'" class="w3-button w3-red w3-center" onClick="return confirmInfo(\'คุณต้องการยกเลิกการสมัครงาน?\')">'._CANCEL.'</a><br><div class="w3-tiny">(*อยู่ระหว่างรอการตอบรับ)</div>';
     	}else{
     		echo '<a href="../src/proc_data.php?act=APPLYNOW&job_id='.$row['Job_ID'].'" class="w3-button w3-yellow w3-center" onClick="return confirmInfo(\'ยืนยันการสมัครงาน?\')">สมัครงาน</a>';
     	}
@@ -544,6 +564,95 @@ if(isset($_POST['type']) && ($_POST['type'] == 14)){
   		echo '<div class="w3-bar-item w3-button">'.($p+1).'</div>';
   	  else
   		echo '<a class="w3-bar-item w3-button" onclick="getData(14, '.($p+1).','.($p * _PER_PAGE_1).',\''.$key.'\')">'.($p+1).'</a>';
+  	}
+	echo '</div></div>';
+	echo '</div>';
+} // Apply job history
+
+if(isset($_POST['type']) && ($_POST['type'] == 16)){
+	$key = "";
+	if(isset($_POST['pagenum'])){
+		$pagenum = $_POST['pagenum'];
+	}
+	$st = $_POST['st'];
+
+	$sql = "SELECT U.* FROM user AS U LIMIT $st, "._PER_PAGE_1;
+	$result = $conn->query($sql);
+	if ($result->num_rows > 0) {
+	  echo '<div class="w3-container">';
+	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$result->num_rows.' รายการ';
+	  echo '</div>';
+	  echo '<div class="w3-container">';
+	  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
+	  echo '<tr><th>ID</th><th>อีเมล</th><th>ชื่อ-สกุล</th><th>รายละเอียด</th><th>สถานะ</th><th>ดำเนินการ</th></tr>';
+	  while($row = $result->fetch_assoc()) {
+    	echo '<tr><td>'.$row['User_ID'].'</td>';
+   	 	echo '<td>'.$row['User_Email'].'</td>';
+   	 	echo '<td>'.$row['User_Fullname'].'</td>';
+   	 	echo '<td><a onClick="document.getElementById(\'uid'.$row['User_ID'].'\').style.display=\'block\'" class="w3-button w3-green w3-center">รายละเอียด</a>';
+
+   	 	/****/
+    	echo '<div id="uid'.$row['User_ID'].'" class="w3-modal">';
+    	echo '<div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:640px">';
+      	echo '<div class="w3-center">';
+        echo '<span onclick="document.getElementById(\'uid'.$row['User_ID'].'\').style.display=\'none\'" class="w3-button w3-xlarge w3-hover-red w3-display-topright" title="Close Modal">&times;</span>';
+      	echo '</div>';
+      	echo '<div class="w3-container">';
+        echo '<p class="w3-container w3-padding">';
+  		echo '<h5><i class="fa fa-user-circle-o"></i> หมายเลขผู้ใช้: '.$row['User_ID'].'</h5>';
+  		echo '<table class="w3-table-all w3-hoverable">';
+  		echo '<tr><th>อีเมล</th><td>'.$row['User_Email'].'</td></tr>';
+  		echo '<tr><th>ชื่อ-สกุล</th><td>'.$row['User_Fullname'].'</td></tr>';
+  		echo '<tr><th>ประเภทผู้ใช้งาน</th><td>'.getUsrStatus($row['User_Type']).'</td></tr>';
+  		echo '<tr><th>การเปิดใช้งาน</th><td>'.getActiveStatus($row['User_Active']).'</td></tr>';
+  		echo '<tr><th>วันที่สมัคร</th><td>'.$row['User_Added'].'</td></tr>';
+  		echo '<tr><th>วันที่ปรับปรุงล่าสุด</th><td>'.$row['User_Updated'].'</td></tr>';
+  		echo '</table>';
+        echo '</p>';       
+      	echo '</div>';
+      	echo '<div class="w3-container w3-border-top w3-padding-16 w3-light-grey">';
+        echo '<button onclick="document.getElementById(\'uid'.$row['User_ID'].'\').style.display=\'none\'" type="button" class="w3-button w3-red">'._CANCEL.'</button>';
+      	echo '</div></div></div>';
+   	 	/****/
+
+   	 	echo '</td>';
+   	 	echo '<td>';
+   	 	if($row['User_Active']){
+			echo '<a class="w3-center"><i class="w3-xlarge fa fa-toggle-on w3-text-green"></i></a>';
+   	 	}else{
+    		echo '<a class="w3-center"><i class="w3-xlarge fa fa-toggle-off"></i></a>';
+    	}
+    	echo '</td>';
+    	echo '<td>';
+    	if($row['User_Type'] != 1 && $row['User_Fullname'] != 'Administrator'){
+    		echo '<a class="w3-center w3-blue w3-button"><i class="fa fa-edit"></i> แก้ไข</a> ';
+    		echo '<a class="w3-center w3-red w3-button"><i class="fa fa-trash"></i> ลบ</a>';
+    	}
+    	echo '</td></tr>';
+	  }
+	  echo '</table>';
+	  echo '</div>';
+	}
+	echo '<div class="w3-container">';
+	echo '<div class="w3-center">';
+	echo '<div class="w3-bar w3-border-bottom w3-border-left w3-border-right">';
+	echo '<div class="w3-bar-item w3-button">หน้า</div>';
+	$nop = ceil($result->num_rows / _PER_PAGE_1);
+	if($nop < 1){
+		$nop = 1;
+	}
+	$pagenum = 1;
+	if ($pagenum < 1) {
+		$pagenum = 1;
+	}
+	else if ($pagenum > $nop) {
+		$pagenum = $nop;
+	}
+	for($p = 0; $p < $nop; $p++){
+	  if($pagenum == ($p+1))
+  		echo '<div class="w3-bar-item w3-button">'.($p+1).'</div>';
+  	  else
+  		echo '<a class="w3-bar-item w3-button" onclick="getData(16, '.($p+1).','.($p * _PER_PAGE_1).',\''.$key.'\')">'.($p+1).'</a>';
   	}
 	echo '</div></div>';
 	echo '</div>';
