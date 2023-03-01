@@ -62,6 +62,10 @@ function getJobResStatus($j){
 		return "สมัครงาน";
 	}else if($j == 20){
 		return "ตอบรับเข้าทำงาน";
+	}else if($j == 30){
+		return "ยกเลิกการสมัครงาน";
+	}else if($j == 40){
+		return "ยกเลิกการจ้างงาน";
 	}
 }
 
@@ -82,6 +86,42 @@ function getSex($j){
 		return "ผู้หญิง";
 	}else if($j == 3){
 		return "ไม่ระบุ";
+	}
+}
+
+function getPaging($type, $nr, $pp, $key, $farm=null){
+		echo '<div class="w3-container">';
+		echo '<div class="w3-center">';
+		echo '<div class="w3-bar w3-border-bottom w3-border-left w3-border-right">';
+		echo '<div class="w3-bar-item w3-button">หน้า</div>';
+		$nop = ceil($nr / $pp);
+		if($nop < 1){
+			$nop = 1;
+		}
+		$pagenum = 1;
+		if ($pagenum < 1) {
+			$pagenum = 1;
+		}
+		else if ($pagenum > $nop) {
+			$pagenum = $nop;
+		}
+		for($p = 0; $p < $nop; $p++){
+		  if($pagenum == ($p+1))
+	  		echo '<div class="w3-bar-item w3-button">'.($p+1).'</div>';
+	  	  else
+	  		echo '<a class="w3-bar-item w3-button" onclick="getData('.$type.', '.($p+1).','.($p * $pp).',\''.$key.'\')">'.($p+1).'</a>';
+	  	}
+		echo '</div></div>';
+		echo '</div>';
+}
+
+function getFarmType($j){
+	if($j == 10){
+		return "ขนาดเล็ก (ไม่เกิน 10 ไร่)";
+	}else if($j == 20){
+		return "ขนาดกลาง (ตั้งแต่ 10 - 30 ไร่)";
+	}else if($j == 30){
+		return "ขนาดใหญ่ (30 ไร่ ขึ้นไป)";
 	}
 }
 

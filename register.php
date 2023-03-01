@@ -3,32 +3,6 @@ include 'libs/config.inc.php';
 include 'tpls/header.php';
 ?>
 <script>
-function procData(){
-  $(document).ready(function(){
-    alert("xxx");
-    let usr_type = 0;
-    if($("#usrType_2").checked){
-      alert($("#usrType_2").val());
-    }
-    if($("#usrType_3").checked){
-      alert($("#usrType_3").val());
-    }
-    $.post("src/proc_data.php",
-    { 
-      act: $("#act").val(),
-      usrEmail: $("#usrEmail").val(),
-      usrPwd: $("#usrEmail").val(), 
-      usrType: usr_type
-    },
-    function(data, status){
-      alert(data);
-      let obj = JSON.parse(data);
-      $("#outproc").css("display", "block");
-      $("#outproc").html(obj.result);
-    });
-  });
-}
-
 function validateEmail(){
   $(document).ready(function(){
     $.post("src/get_data.php",
@@ -100,27 +74,6 @@ function validateEmail(){
     <div class="w3-button w3-yellow"><a href="index.php"><i class="fa fa-angle-double-left"></i> กลับหน้าแรก</a></div>
   </div>
 
-</div>
-
-<div id="outproc" class="w3-modal">
-    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
-
-      <div class="w3-center"><br>
-        <span onclick="document.getElementById('outproc').style.display='none'" class="w3-button w3-xlarge w3-hover-red w3-display-topright" title="Close Modal">&times;</span>
-      </div>
-
-      <div class="w3-container">
-        <div class="w3-center">
-           <span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">xxx</span>
-        </div>
-        <p class="w3-container w3-padding-64">xxx</p>       
-      </div>
-
-      <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
-        <button onclick="document.getElementById('outproc').style.display='none'" type="button" class="w3-button w3-red"><?=_CANCEL?></button>
-      </div>
-
-    </div>
 </div>
 
 <?php

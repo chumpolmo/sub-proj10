@@ -12,5 +12,6 @@ define("_TITLE_PRODUCT_DESCRIPTION", "รายละเอียดผลิต
 define("_CANCEL", "ยกเลิก");
 define("_THB", "บาท");
 define("_PER_PAGE_1", 9);
+define("_PER_PAGE_2", 10);
 define("_ADMIN_EMAIL", "pineapple65.info@gmail.com");
 ?>

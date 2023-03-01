@@ -1,14 +1,16 @@
 <!-- Sidebar/menu -->
 <nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
   <div class="w3-container w3-row">
-    <div class="w3-col s4">
+    <!-- div class="w3-col s4">
       <img src="../figs/avatar01.png" class="w3-circle w3-margin-right" style="width:46px">
-    </div>
-    <div class="w3-col s8 w3-bar">
-      <span>ยินดีต้อนรับ <strong><?=$_SESSION['sessUserEmail']?></strong></span><br>
-      <a href="user_profile.php" class="w3-bar-item w3-button"><i class="fa fa-user"></i></a>
-      <a href="user_setting.php" class="w3-bar-item w3-button"><i class="fa fa-cog"></i></a>
-      <a href="../src/proc_data.php?act=LOGOUT" class="w3-bar-item w3-button" onclick="return confirmInfo('กรุณายืนยันการออกจากระบบ?')"><i class="fa fa-sign-out"></i></a>
+    </div -->
+    <div class="w3-col w3-bar w3-center">
+      <div><i class="fa fa-user-circle"></i> ยินดีต้อนรับ <strong><?=$_SESSION['sessUserEmail']?></strong></div>
+      <div class="w3-bar w3-center">
+        <a href="user_profile.php" class="w3-bar-item w3-button"><i class="fa fa-user"></i></a>
+        <a href="user_setting.php" class="w3-bar-item w3-button"><i class="fa fa-cog"></i></a>
+        <a href="../src/proc_data.php?act=LOGOUT" class="w3-bar-item w3-button" onclick="return confirmInfo('กรุณายืนยันการออกจากระบบ?')"><i class="fa fa-sign-out"></i></a>
+      </div>
     </div>
   </div>
   <hr>

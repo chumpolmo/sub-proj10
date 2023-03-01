@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 27, 2023 at 04:48 PM
+-- Generation Time: Mar 01, 2023 at 04:42 PM
 -- Server version: 8.0.32
 -- PHP Version: 8.1.6
 
@@ -47,7 +47,8 @@ CREATE TABLE `farm` (
 --
 
 INSERT INTO `farm` (`Farm_ID`, `Farm_Name`, `Farm_Description`, `Farm_Type`, `Farm_Note`, `Farm_Email`, `Farm_Phone`, `Farm_Address`, `Farm_Location`, `Farm_Added`, `Farm_Updated`, `User_ID`) VALUES
-(1, 'ฟาร์มถิ่นเมืองไทย', 'ฟาร์มถิ่นเมืองไทย ศรีราชา จ.ชลบุรี', 1, '', 'thmth.farm@gmail.com', '0361111111', 'ตำบลเขาคันทรง อำเภอศรีราชา จังหวัดชลบุรี 20110', '13.0688962,101.1644211', '2023-02-15 08:34:33', '2023-02-15 08:34:33', 2);
+(1, 'ฟาร์มถิ่นเมืองไทย', 'ฟาร์มถิ่นเมืองไทย ศรีราชา จ.ชลบุรี', 10, '', 'thmth.farm@gmail.com', '0361111111', 'ตำบลเขาคันทรง อำเภอศรีราชา จังหวัดชลบุรี 20110', '13.0688962,101.1644211', '2023-02-15 08:34:33', '2023-02-15 08:34:33', 2),
+(2, 'ฟาร์มทดสอบ', 'รายละเอียดฟาร์มทดสอบ', 20, 'หมายเหตุฟาร์มทดสอบ', 'test.farm@mail.com', '0999999999', 'ที่อยู่ฟาร์มทดสอบ', '13.781339662707444,100.56005135178566', '2023-03-01 07:48:34', '2023-03-01 07:57:04', 2);
 
 -- --------------------------------------------------------
 
@@ -116,7 +117,28 @@ CREATE TABLE `jobs_resume` (
 --
 
 INSERT INTO `jobs_resume` (`Job_ID`, `Res_ID`, `JobRes_Status`, `Apply_Date`, `Accept_Date`) VALUES
-(1, 2, 10, '2023-02-27 15:47:55', '0000-00-00 00:00:00');
+(2, 2, 10, '2023-02-28 15:10:55', '0000-00-00 00:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `logs_jobs_resume`
+--
+
+CREATE TABLE `logs_jobs_resume` (
+  `Job_ID` int NOT NULL,
+  `Res_ID` int NOT NULL,
+  `JobRes_Status` int NOT NULL,
+  `JobRes_Note` varchar(200) NOT NULL,
+  `JobRes_Date` timestamp NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `logs_jobs_resume`
+--
+
+INSERT INTO `logs_jobs_resume` (`Job_ID`, `Res_ID`, `JobRes_Status`, `JobRes_Note`, `JobRes_Date`) VALUES
+(1, 2, 30, 'ยกเลิกการสมัครงาน', '2023-02-28 15:11:05');
 
 -- --------------------------------------------------------
 
@@ -133,6 +155,14 @@ CREATE TABLE `news` (
   `News_Updated` timestamp NOT NULL,
   `User_ID` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `news`
+--
+
+INSERT INTO `news` (`News_ID`, `News_Title`, `News_Description`, `News_Photo`, `News_Added`, `News_Updated`, `User_ID`) VALUES
+(1, 'Smart Farm', 'Smart Farm @ Monitoring System', '../figs/news_figs/news_1.jpg', '2023-02-28 15:48:03', '2023-02-28 15:48:03', 1),
+(4, 'ทดสอบอัปโหลด', 'รายละเอียดการทดสอบอัปโหลด', '../figs/news_figs/news_20230301032356.jpg', '2023-03-01 02:23:56', '0000-00-00 00:00:00', 1);
 
 -- --------------------------------------------------------
 
@@ -182,7 +212,7 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`Pro_ID`, `Pro_Title`, `Pro_Description`, `Pro_Photo`, `Pro_Quantity`, `Pro_PricePU`, `Pro_Month`, `Pro_Year`, `Pro_Unit`, `Pro_Contact`, `Pro_Added`, `Pro_Updated`, `Farm_ID`) VALUES
-(1, 'สับปะรดอบแห้ง', 'สับปะรดอบแห้ง ไม่มีน้ำตาล กินเจทานได้ คลีน ๆ เนื้อล้วน หวานธรรมชาติ', 'prod_figs/prod_1.jpg', 100, 80, 2, 2023, 'แพ็ค', 'กลุ่มวิสาหกิจชุมชนสับปะรดศรีราชา จังหวัดชลบุรี โทร. 0358898898', '2023-02-15 01:35:01', '2023-02-15 01:35:01', 1),
+(1, 'สับปะรดอบแห้ง', 'สับปะรดอบแห้ง ไม่มีน้ำตาล กินเจทานได้ คลีน ๆ เนื้อล้วน หวานธรรมชาติ', 'prod_figs/prod_1.jpg', 100, 80, 1, 2023, 'แพ็ค', 'กลุ่มวิสาหกิจชุมชนสับปะรดศรีราชา จังหวัดชลบุรี โทร. 0358898898', '2023-02-15 01:35:01', '2023-03-01 15:38:08', 1),
 (2, 'น้ำสับปะรดไซเดอร์', 'น้ำสับปะรดไซเดอร์ จากสับปะรดศรีราชา จ.ชลบุรี ช่วย ปรับกรดในกระเพาะให้ย่อยอาหารได้ดีเหมือนเดิมและมีจุลินทรีย์ดี ช่วยกำจัดลมในท้องและลำไส้', 'prod_figs/prod_2.jpg', 60, 120, 2, 2023, 'ขวด', 'กลุ่มวิสาหกิจชุมชนสับปะรดศรีราชา จังหวัดชลบุรี โทร. 0358898898', '2023-02-17 04:53:59', '2023-02-17 04:53:59', 1);
 
 -- --------------------------------------------------------
@@ -240,7 +270,7 @@ INSERT INTO `user` (`User_ID`, `User_Email`, `User_Password`, `User_Fullname`, `
 (1, 'admin@mail.com', 'Admin@1234', 'Administrator', 1, 1, '2023-02-03 10:44:57', '2023-02-03 10:44:57'),
 (2, 'ajkhaeg@mail.com', 'Ajkhaeg@1234', 'Aj.Khaeg Chumpol', 2, 1, '2023-02-03 10:45:47', '2023-02-03 10:45:47'),
 (3, 'mrjob@mail.com', 'Mrjob@1234', 'Mr.Job Pine', 3, 1, '2023-02-03 10:46:27', '2023-02-03 10:46:27'),
-(18, 'bbb@mail.com', 'Bbb@1234', '', 3, 0, '2023-02-27 15:18:57', '0000-00-00 00:00:00');
+(4, 'chumpol@mail.com', 'Chumpol@1234', 'Mr.Khaeg Chumpol', 2, 1, '2023-02-28 04:48:56', '2023-02-28 05:29:56');
 
 --
 -- Indexes for dumped tables
@@ -272,6 +302,12 @@ ALTER TABLE `jobs_occupation`
 --
 ALTER TABLE `jobs_resume`
   ADD UNIQUE KEY `PK_JR_ID` (`Job_ID`,`Res_ID`);
+
+--
+-- Indexes for table `logs_jobs_resume`
+--
+ALTER TABLE `logs_jobs_resume`
+  ADD PRIMARY KEY (`Job_ID`,`Res_ID`,`JobRes_Date`);
 
 --
 -- Indexes for table `news`
@@ -314,7 +350,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `farm`
 --
 ALTER TABLE `farm`
-  MODIFY `Farm_ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Farm_ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `jobs`
@@ -326,7 +362,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `news`
 --
 ALTER TABLE `news`
-  MODIFY `News_ID` int NOT NULL AUTO_INCREMENT;
+  MODIFY `News_ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `occupation`
@@ -338,7 +374,7 @@ ALTER TABLE `occupation`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `Pro_ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Pro_ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `resume`
@@ -350,7 +386,7 @@ ALTER TABLE `resume`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `User_ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `User_ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Constraints for dumped tables

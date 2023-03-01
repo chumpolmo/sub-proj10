@@ -20,9 +20,9 @@ if(!isset($_SESSION['sessLoggedIn']) || $_SESSION['sessLoggedIn'] === false){
 }
 
 // Check action type
-$t = 16;
+$t = 20;
 if(isset($_POST['type'])){
-  $t = 17;
+  $t = 21;
 }
 ?>
 <script>
@@ -31,7 +31,7 @@ function getData(t, np, st, key=null){
     $.post("../src/get_data.php",
     { type: t, pagenum: np, st: st, key: key },
     function(data, status){
-      $("#outuser").html(data);
+      $("#outlogs").html(data);
     });
   });
 }
@@ -58,14 +58,24 @@ function getData(t, np, st, key=null){
 
   <!-- Header -->
   <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-user-circle-o"></i> ข้อมูลผู้ใช้งาน</b></h5>
+    <h5><b><i class="fa fa-history"></i> ข้อมูลประวัติดำเนินการ</b></h5>
   </header>
 
-  <div class="w3-container w3-right">
-    <a href="user_form.php" class="w3-button w3-blue"><i class="fa fa-plus-circle"></i> เพิ่มผู้ใช้งาน</a>
-  </div>
-  <div id="outuser" class="w3-container">
+  <form>
+    <div class="w3-center">
+    <div class="w3-bar">
+      <input type="text" name="keyword" id="keyword" class="w3-bar-item w3-input w3-border" required>
+      <button type="button" class="w3-bar-item w3-button w3-blue" onclick="getData(<?=$t?>, 0, 0, document.getElementById('keyword').value)"><i class="fa fa-search"></i> ค้นหา</button>
+    </div>
+    </div>
+  </form>
+
+  <div id="outlogs" class="w3-container">
     <i class="fa fa-refresh w3-text-gray w3-center" title="Loading..."></i>
+  </div>
+
+  <div class="w3-container">
+    <a href="../src/proc_data.php?act=LOGSCLEAR" class="w3-button w3-red" onclick="return confirmInfo('ยืนยันการเคลียร์ประวัติดำเนินการทั้งหมด?')"><i class="fa fa-eraser"></i> เคลียร์ประวัติดำเนินการทั้งหมด</a>
   </div>
   <hr>
   <br>
