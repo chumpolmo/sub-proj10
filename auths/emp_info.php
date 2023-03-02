@@ -58,7 +58,7 @@ function getData(t, np, st, key=null){
 
   <!-- Header -->
   <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-bullhorn fa-fw"></i> ข้อมูลประกาศจ้างงาน</b></h5>
+    <h5><b><i class="fa fa-users fa-fw"></i> การจ้างงาน</b></h5>
   </header>
 
   <form>

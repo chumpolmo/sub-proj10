@@ -40,7 +40,7 @@ CREATE TABLE `farm` (
   `Farm_Added` timestamp NOT NULL,
   `Farm_Updated` timestamp NOT NULL,
   `User_ID` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `farm`
@@ -67,7 +67,7 @@ CREATE TABLE `jobs` (
   `Job_Added` timestamp NOT NULL,
   `Job_Updated` timestamp NOT NULL,
   `Farm_ID` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `jobs`
@@ -87,7 +87,7 @@ INSERT INTO `jobs` (`Job_ID`, `Job_Title`, `Job_Description`, `Job_Salary`, `Job
 CREATE TABLE `jobs_occupation` (
   `Job_ID` int NOT NULL,
   `Occ_ID` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `jobs_occupation`
@@ -110,7 +110,7 @@ CREATE TABLE `jobs_resume` (
   `JobRes_Status` int NOT NULL,
   `Apply_Date` timestamp NOT NULL,
   `Accept_Date` timestamp NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `jobs_resume`
@@ -131,7 +131,7 @@ CREATE TABLE `logs_jobs_resume` (
   `JobRes_Status` int NOT NULL,
   `JobRes_Note` varchar(200) NOT NULL,
   `JobRes_Date` timestamp NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `logs_jobs_resume`
@@ -154,7 +154,7 @@ CREATE TABLE `news` (
   `News_Added` timestamp NOT NULL,
   `News_Updated` timestamp NOT NULL,
   `User_ID` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `news`
@@ -173,7 +173,7 @@ INSERT INTO `news` (`News_ID`, `News_Title`, `News_Description`, `News_Photo`, `
 CREATE TABLE `occupation` (
   `Occ_ID` int NOT NULL,
   `Occ_Name` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `occupation`
@@ -205,7 +205,7 @@ CREATE TABLE `product` (
   `Pro_Added` timestamp NOT NULL,
   `Pro_Updated` timestamp NOT NULL,
   `Farm_ID` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `product`
@@ -236,7 +236,7 @@ CREATE TABLE `resume` (
   `Res_Updated` timestamp NOT NULL,
   `Occ_ID` int NOT NULL,
   `User_ID` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `resume`
@@ -254,13 +254,13 @@ INSERT INTO `resume` (`Res_ID`, `Res_Prefix`, `Res_Name`, `Res_Surname`, `Res_Ag
 CREATE TABLE `user` (
   `User_ID` int NOT NULL,
   `User_Email` varchar(100) NOT NULL,
-  `User_Password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `User_Password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `User_Fullname` varchar(100) NOT NULL,
   `User_Type` tinyint(1) NOT NULL,
   `User_Active` tinyint(1) NOT NULL,
   `User_Added` timestamp NOT NULL,
   `User_Updated` timestamp NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `user`

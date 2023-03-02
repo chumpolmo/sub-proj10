@@ -718,4 +718,86 @@ if(isset($_GET['act']) == 'PRODDEL' && $_GET['act'] == 'PRODDEL'){
 	echo '</div>';
 	echo '</div>';
 } // Delete product
+
+if(isset($_POST['act']) == 'JOBADD' && ($_POST['act'] == 'JOBADD' || $_POST['act'] == 'JOBUPD')){
+	$txt = "เพิ่ม";
+	$act = $_POST['act'];
+	$jobTitle = testInput($_POST['jobTitle']);
+	$jobDesc = testInput($_POST['jobDesc']);
+	$jobSalary = testInput($_POST['jobSalary']);
+	$jobPhone = testInput($_POST['jobPhone']);
+	$jobNote = testInput($_POST['jobNote']);
+	$jobStatus = testInput($_POST['jobStatus']);
+	$farmId = testInput($_POST['farmId']);
+	$occId = testInput($_POST['occId']);
+
+	/******/
+	if($_POST['act'] == 'JOBUPD'){
+		$txt = "แก้ไข";
+		$jobId = testInput($_POST['job_id']);
+		$sql = "UPDATE jobs SET Job_Title=\"$jobTitle\", Job_Description=\"$jobDesc\", Job_Salary=\"$jobSalary\", Job_Phone=\"$jobPhone\", Job_Note=\"$jobNote\", Job_Status=\"$jobStatus\", Farm_ID=\"$farmId\", Job_Updated=NOW() WHERE Job_ID=".$jobId;
+
+		$sql_occ = "UPDATE jobs_occupation SET Occ_ID=$occId WHERE Job_ID=".$jobId;
+	}else{
+		$sql = "INSERT INTO jobs (Job_ID, Job_Title, Job_Description, Job_Salary, Job_Phone, Job_Note, Job_Status, Job_Added, Job_Updated, Farm_ID) ";
+		$sql.= "VALUES (NULL, \"$jobTitle\", \"$jobDesc\", \"$jobSalary\", \"$jobPhone\", \"$jobNote\", \"$jobStatus\", NOW(), '0000-00-00 00:00:00', $farmId)";
+	}
+	//echo $sql;
+	$result = $conn->query($sql);
+
+	if($_POST['act'] == 'JOBADD'){
+		$sql_tmp = "SELECT LAST_INSERT_ID() AS tmpId";
+		$res_tmp = $conn->query($sql_tmp);
+		$row_tmp = $res_tmp->fetch_assoc();
+
+		$sql_occ = "INSERT INTO jobs_occupation (Job_ID, Occ_ID) VALUES (".$row_tmp['tmpId'].", $occId)";
+	}
+
+	echo '<br><div class="w3-container">';
+	echo '<div class="w3-card w3-border w3-pale-yellow">';
+	echo '<div class="w3-center w3-padding-64">';
+	echo '<span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">การ'.$txt.'ประกาศจ้างงาน</span>';
+	echo '</div>';
+	echo '<div class="w3-center w3-container">';
+	if (!$result) {
+		echo '<p>การ'.$txt.'ประกาศจ้างงานผิดพลาด กรุณาตรวจสอบข้อมูลอีกครั้ง<br>';
+		echo 'กรุณารอสักครู่...</p>';
+		echo '<meta http-equiv="refresh" content="2; url=../auths/job_form.php?act='.$act.'&job_id='.$jobId.'">';
+	}else{
+		$res_occ = $conn->query($sql_occ);
+		echo '<p>การ'.$txt.'ประกาศจ้างงานสำเร็จ<br>';
+		echo 'กรุณารอสักครู่...</p>';
+		echo '<meta http-equiv="refresh" content="2; url=../auths/job_info.php">';
+	}
+	echo '<br><br></div>';
+	echo '</div>';
+	echo '</div>';
+} // Add new and update job
+
+if(isset($_GET['act']) == 'JOBDEL' && $_GET['act'] == 'JOBDEL'){
+	$txt = "ลบ";
+	$jobId = testInput($_GET['job_id']);
+
+	$sql = "DELETE FROM jobs_occupation WHERE Job_ID=".$jobId;
+	$result = $conn->query($sql);
+	echo '<br><div class="w3-container">';
+	echo '<div class="w3-card w3-border w3-pale-yellow">';
+	echo '<div class="w3-center w3-padding-64">';
+	echo '<span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">การ'.$txt.'ประกาศจ้างงาน</span>';
+	echo '</div>';
+	echo '<div class="w3-center w3-container">';
+	if (!$result) {
+		echo '<p>การ'.$txt.'ประกาศจ้างงานผิดพลาด กรุณาตรวจสอบข้อมูลอีกครั้ง<br>';
+		echo 'กรุณารอสักครู่...</p>';
+	}else{
+		$sql = "DELETE FROM jobs WHERE Job_ID=".$jobId;
+		$result = $conn->query($sql);
+		echo '<p>การ'.$txt.'ประกาศจ้างงานสำเร็จ<br>';
+		echo 'กรุณารอสักครู่...</p>';
+	}
+	echo '<meta http-equiv="refresh" content="2; url=../auths/job_info.php">';
+	echo '<br><br></div>';
+	echo '</div>';
+	echo '</div>';
+} // Delete job
 ?>

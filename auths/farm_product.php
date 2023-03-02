@@ -93,7 +93,7 @@ function getData(t, np, st, key=null, f){
     <i class="fa fa-leaf fa-fw"></i> ฟาร์ม : <?=$farmName?></b></h5>
   </header>
   <div class="w3-container w3-right">
-    <a href="product_form.php?act=PRODADD&farm_id=<?=$farm_id?>" class="w3-button w3-blue"><i class="fa fa-plus-circle"></i> เพิ่มข้อมูลผลิตภัณฑ์</a>
+    <a href="product_form.php?act=PRODADD&farm_id=<?=$farm_id?>" class="w3-button w3-blue"><i class="fa fa-plus-circle"></i> เพิ่มข้อมูลผลผลิต</a>
   </div>
   <div id="outproduct" class="w3-container">
     <i class="fa fa-refresh w3-text-gray w3-center" title="Loading..."></i>

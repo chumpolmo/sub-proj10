@@ -857,5 +857,81 @@ if(isset($_POST['type']) && ($_POST['type'] == 26)){
 	}
 } // Get product of farm
 
+if(isset($_POST['type']) && ($_POST['type'] == 28)){
+	$type = $_POST['type'];
+	$key = "";
+	$cond = "";
+	if(isset($_POST['key']) && !empty($_POST['key'])){
+		$key = $_POST['key'];
+		$cond = "WHERE (J.Job_Title LIKE \"%$key%\" OR J.Job_Description LIKE \"%$key%\" OR F.Farm_Name LIKE \"%$key%\")";
+	}
+	if(isset($_POST['pagenum'])){
+		$pagenum = $_POST['pagenum'];
+	}
+	$st = $_POST['st'];
+
+	$sql = "SELECT J.*, F.Farm_ID, F.Farm_Name, U.User_ID, U.User_Fullname FROM jobs AS J ";
+	$sql.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID ";
+	$sql.= "INNER JOIN user AS U ON F.User_ID=F.User_ID AND U.User_ID=".$_SESSION['sessUserId']." $cond ";
+	$sql.= "LIMIT $st, "._PER_PAGE_2;
+	$result = $conn->query($sql);
+	if ($result->num_rows > 0) {
+	  echo '<div class="w3-container">';
+	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$result->num_rows.' รายการ';
+	  echo '</div>';
+	  echo '<div class="w3-container">';
+	  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
+	  echo '<tr><th>ID</th><th>ตำแหน่ง</th><th>อัตราค่าจ้าง ('._THB.')</th><th>ฟาร์ม</th><th>รายละเอียด</th><th>ดำเนินการ</th></tr>';
+	  while($row = $result->fetch_assoc()) {
+    	echo '<tr><td>'.$row['Job_ID'].'</td>';
+   	 	echo '<td>'.$row['Job_Title'].'</td>';
+   	 	echo '<td>'.number_format($row['Job_Salary']).'</td>';
+   	 	echo '<td>'.$row['Farm_Name'].'</td>';
+   	 	echo '<td><a onClick="document.getElementById(\'uid'.$row['Job_ID'].'\').style.display=\'block\'" class="w3-button w3-green w3-center">รายละเอียด</a>';
+
+   	 	/****/
+    	echo '<div id="uid'.$row['Job_ID'].'" class="w3-modal">';
+    	echo '<div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:640px">';
+      	echo '<div class="w3-center">';
+        echo '<span onclick="document.getElementById(\'uid'.$row['Job_ID'].'\').style.display=\'none\'" class="w3-button w3-xlarge w3-hover-red w3-display-topright" title="Close Modal">&times;</span>';
+      	echo '</div>';
+      	echo '<div class="w3-container">';
+        echo '<p class="w3-container w3-padding">';
+  		echo '<h5><i class="fa fa-bullhorn fa-fw"></i> หมายเลขการจ้างงาน: '.$row['User_ID'].'</h5>';
+  		echo '<table class="w3-table-all w3-hoverable">';
+  		echo '<tr><th>ตำแหน่ง</th><td>'.$row['Job_Title'].'</td></tr>';
+  		echo '<tr><th>ฟาร์ม</th><td>'.$row['Farm_Name'].'</td></tr>';
+  		echo '<tr><th>รายละเอียดงาน</th><td>'.$row['Job_Description'].'</td></tr>';
+  		echo '<tr><th>อัตราค่าจ้าง</th><td>'.number_format($row['Job_Salary']).' '._THB.'</td></tr>';
+  		echo '<tr><th>เบอร์ติดต่อ</th><td>'.$row['Job_Phone'].'</td></tr>';
+  		echo '<tr><th>หมายเหตุ</th><td>'.$row['Job_Note'].'</td></tr>';
+  		echo '<tr><th>สถานะ</th><td>'.getJobStatus($row['Job_Status']).'</td></tr>';
+  		echo '<tr><th>วันที่เผยแพร่</th><td>'.$row['Job_Added'].'</td></tr>';
+  		echo '<tr><th>วันที่ปรับปรุงล่าสุด</th><td>'.$row['Job_Updated'].'</td></tr>';
+  		echo '</table>';
+        echo '</p>';       
+      	echo '</div>';
+      	echo '<div class="w3-container w3-border-top w3-padding-16 w3-light-grey">';
+        echo '<button onclick="document.getElementById(\'uid'.$row['Job_ID'].'\').style.display=\'none\'" type="button" class="w3-button w3-red">'._CANCEL.'</button>';
+      	echo '</div></div></div>';
+   	 	/****/
+
+   	 	echo '</td>';
+    	echo '<td>';
+    	echo '<a href="job_form.php?act=JOBUPD&job_id='.$row['Job_ID'].'" class="w3-center w3-orange w3-button"><i class="fa fa-edit"></i> แก้ไข</a> ';
+    	echo '<a href="../src/proc_data.php?act=JOBDEL&job_id='.$row['Job_ID'].'" class="w3-center w3-red w3-button" onClick="return confirmInfo(\'ยืนยันการลบข้อมูลการจ้างงาน?\')"><i class="fa fa-trash"></i> ลบ</a>';
+    	echo '</td></tr>';
+	  }
+	  echo '</table>';
+	  echo '</div>';
+	  getPaging($type, $result->num_rows, _PER_PAGE_2, $key);
+	}else{
+		echo '<div class="w3-container">';
+		echo '<div class="w3-center w3-padding-64">';
+		echo '<i class="fa fa-exclamation-triangle"></i> ไม่มีข้อมูล';
+		echo '</div></div>';
+	}
+} // Get job require
+
 closeConDB($conn);
 ?>
