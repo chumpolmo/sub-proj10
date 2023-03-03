@@ -20,24 +20,29 @@ if(!isset($_SESSION['sessLoggedIn']) || $_SESSION['sessLoggedIn'] === false){
 }
 
 // Check action type
-$t = 28;
-if(isset($_POST['type'])){
-  $t = 29;
+$t = 30;
+if(isset($_GET['act'])){
+  $t = 31;
+}
+
+$j = null;
+if(isset($_GET['job_id'])){
+  $j = $_GET['job_id'];
 }
 ?>
 <script>
-function getData(t, np, st, key=null){
+function getData(t, np, st, key=null, j=null){
   $(document).ready(function(){
     $.post("../src/get_data.php",
-    { type: t, pagenum: np, st: st, key: key },
+    { type: t, pagenum: np, st: st, key: key, job_id: j},
     function(data, status){
-      $("#outjob").html(data);
+      $("#outapply").html(data);
     });
   });
 }
 </script>
 </head>
-<body class="w3-light-grey" onload="getData(<?=$t?>, 0, 0)">
+<body class="w3-light-grey" onload="getData(<?=$t?>, 0, 0, null, <?=$j?>)">
 
 <!-- Top container -->
 <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
@@ -61,17 +66,12 @@ function getData(t, np, st, key=null){
     <h5><b><i class="fa fa-users fa-fw"></i> การจ้างงาน/รับคนทำงาน</b></h5>
   </header>
 
-  <form>
-    <div class="w3-center">
-    <div class="w3-bar">
-      <input type="text" name="keyword" id="keyword" class="w3-bar-item w3-input w3-border" required>
-      <button type="button" class="w3-bar-item w3-button w3-blue" onclick="getData(<?=$t?>, 0, 0, document.getElementById('keyword').value)"><i class="fa fa-search"></i> ค้นหา</button>
-    </div>
-    </div>
-  </form>
-
-  <div id="outjob" class="w3-container">
+  <div id="outapply" class="w3-container">
     <i class="fa fa-refresh w3-text-gray w3-center" title="Loading..."></i>
+  </div>
+
+  <div class="w3-container">
+    <div class="w3-button w3-yellow"><a href="emp_info.php"><i class="fa fa-arrow-left"></i> ย้อนกลับ</a></div>
   </div>
   <hr>
   <br>

@@ -800,4 +800,43 @@ if(isset($_GET['act']) == 'JOBDEL' && $_GET['act'] == 'JOBDEL'){
 	echo '</div>';
 	echo '</div>';
 } // Delete job
+
+if(isset($_GET['act']) && ($_GET['act'] == 'EMPAPPLY' || $_GET['act'] == 'EMPCAN')){
+	$txt = "รับคนทำงาน";
+	$job_id = $_GET['job_id'];
+	$res_id = $_GET['res_id'];
+	echo '<br><div class="w3-container">';
+	echo '<div class="w3-card w3-border w3-pale-yellow">';
+	echo '<div class="w3-center w3-padding-64">';
+	echo '<span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">การจ้างงาน/รับคนทำงาน</span>';
+	echo '</div>';
+	echo '<div class="w3-center w3-container">';
+	
+	$sql_log = "INSERT INTO logs_jobs_resume (Job_ID, Res_ID, JobRes_Status, JobRes_Note, JobRes_Date) ";
+	$sql_log.= "VALUES($job_id, $res_id, 40, 'ยกเลิกการจ้างงาน', NOW())";
+	$res_log = $conn->query($sql_log);
+
+	if($_GET['act'] == "EMPCAN"){
+		$txt = "ยกเลิกการจ้างงาน";
+		$sql_jr = "DELETE FROM jobs_resume ";
+		$sql_jr.= "WHERE (Job_ID=".$job_id." AND Res_ID=".$res_id.")"; // ยกเลิกการจ้างงาน
+	}else{
+		$sql_jr = "UPDATE jobs_resume SET JobRes_Status=20, Accept_Date=NOW() ";
+		$sql_jr.= "WHERE (Job_ID=".$job_id." AND Res_ID=".$res_id.")"; // ตอบรับการสมัครงาน
+	}
+	$res_jr = $conn->query($sql_jr);
+	if($res_jr){
+		echo '<p>การ'.$txt.'สำเร็จ<br>';
+		echo 'กรุณารอสักครู่...</p>';
+		echo '<meta http-equiv="refresh" content="2; url=../auths/emp_form.php?act=EMPADD&job_id='.$job_id.'">';
+	}else{
+		echo '<p>การ'.$txt.'ผิดพลาด กรุณาตรวจสอบข้อมูลอีกครั้ง<br>';
+		echo 'กรุณารอสักครู่...</p>';
+		echo '<meta http-equiv="refresh" content="2; url=../auths/emp_form.php?act=EMPADD&job_id='.$job_id.'">';
+	}
+	echo '<br><br></div>';
+	echo '</div>';
+	echo '</div>';
+} // Employment
+
 ?>

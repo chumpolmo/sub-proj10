@@ -918,8 +918,12 @@ if(isset($_POST['type']) && ($_POST['type'] == 28)){
 
    	 	echo '</td>';
     	echo '<td>';
-    	echo '<a href="job_form.php?act=JOBUPD&job_id='.$row['Job_ID'].'" class="w3-center w3-orange w3-button"><i class="fa fa-edit"></i> แก้ไข</a> ';
-    	echo '<a href="../src/proc_data.php?act=JOBDEL&job_id='.$row['Job_ID'].'" class="w3-center w3-red w3-button" onClick="return confirmInfo(\'ยืนยันการลบข้อมูลการจ้างงาน?\')"><i class="fa fa-trash"></i> ลบ</a>';
+    	/****/
+    	$sql_emp = "SELECT COUNT(Res_ID) AS EMP FROM jobs_resume WHERE Job_ID=".$row['Job_ID'];
+    	$res_emp = $conn->query($sql_emp);
+    	$row_emp = $res_emp->fetch_assoc();
+    	echo '<a href="emp_form.php?act=EMPADD&job_id='.$row['Job_ID'].'" class="w3-center w3-blue w3-button"><i class="fa fa-user-plus"></i> '.$row_emp['EMP'].' ข้อมูล</a>';
+    	/****/
     	echo '</td></tr>';
 	  }
 	  echo '</table>';
@@ -932,6 +936,95 @@ if(isset($_POST['type']) && ($_POST['type'] == 28)){
 		echo '</div></div>';
 	}
 } // Get job require
+
+if(isset($_POST['type']) && ($_POST['type'] == 31)){
+	$key = "";
+	$jobId = $_POST['job_id'];
+	$type = $_POST['type'];
+	if(isset($_POST['pagenum'])){
+		$pagenum = $_POST['pagenum'];
+	}
+	$st = $_POST['st'];
+
+	$sql = "SELECT J.Job_ID, J.Job_Title, F.Farm_Name FROM jobs AS J ";
+	$sql.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID WHERE J.Job_ID=".$jobId;
+	$result = $conn->query($sql);
+    $row = $result->fetch_assoc();
+  	echo '<h6><b><i class="fa fa-address-card-o"></i> ตำแหน่ง : '.$row['Job_Title'].'</b></h6>';
+  	echo '<h6><b><i class="fa fa-leaf"></i> ฟาร์ม : '.$row['Farm_Name'].'</b></h6>';
+
+	$sql_jr = "SELECT JR.*, R.*, O.* FROM jobs_resume AS JR ";
+	$sql_jr.= "INNER JOIN resume AS R ON R.Res_ID=JR.Res_ID ";
+	$sql_jr.= "INNER JOIN occupation AS O ON R.Occ_ID=O.Occ_ID WHERE JR.Job_ID=".$jobId;
+	$sql_jr.= " LIMIT $st, "._PER_PAGE_2;
+	$res_jr = $conn->query($sql_jr);
+	if ($res_jr->num_rows > 0) {
+	  echo '<div class="w3-container">';
+	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$res_jr->num_rows.' รายการ';
+	  echo '</div>';
+	  echo '<div class="w3-container">';
+	  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
+	  echo '<tr><th>No</th><th>ชื่อ-สกุล</th><th>ตำแหน่งงานที่สนใจ</th><th>ประวัติ</th><th>ดำเนินการ</th></tr>';
+	  $no = 0;
+	  while($row_jr = $res_jr->fetch_assoc()) {
+	  	$no++;
+    	echo '<tr><td>'.($no).'</td>';
+   	 	echo '<td>'.getPrefix($row_jr['Res_Prefix']).$row_jr['Res_Name'].' '.$row_jr['Res_Surname'].'</td>';
+   	 	echo '<td>'.$row_jr['Occ_Name'].'</td>';
+   	 	echo '<td><a onClick="document.getElementById(\'jd'.($no).'\').style.display=\'block\'" class="w3-button w3-green w3-center"><i class="fa fa-eye"></i> ดูประวัติ</a>';
+
+   	 	/****/
+    	echo '<div id="jd'.($no).'" class="w3-modal">';
+    	echo '<div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:640px">';
+      	echo '<div class="w3-center">';
+        echo '<span onclick="document.getElementById(\'jd'.($no).'\').style.display=\'none\'" class="w3-button w3-xlarge w3-hover-red w3-display-topright" title="Close Modal">&times;</span>';
+      	echo '</div>';
+      	echo '<div class="w3-container">';
+        echo '<p class="w3-container w3-padding">';
+  		echo '<h5><i class="fa fa-vcard"></i> หมายเลขผู้สมัคร: '.$row_jr['Res_ID'].'</h5>';
+  		echo '<table class="w3-table-all w3-hoverable">';
+  		echo '</td><th>ชื่อ-สกุล</th><td colspan="3">'.getPrefix($row_jr['Res_Prefix']).$row_jr['Res_Name'].' '.$row_jr['Res_Surname'].'</td></tr>';
+  		echo '<tr><th>อายุ</th><td>'.$row_jr['Res_Age'].' ปี</td><th>เพศ</th><td>'.getSex($row_jr['Res_Sex']).'</td></tr>';
+  		echo '<tr><th>ที่อยู่</th><td colspan="3">'.$row_jr['Res_Address'].'</td></tr>';
+  		echo '<tr><th>อีเมล</th><td>'.$row_jr['Res_Email'].'</td><th>เบอร์ติดต่อ</th><td>'.$row_jr['Res_Phone'].'</td></tr>';
+  		echo '<tr><th>ตำแหน่งงานที่สนใจ</th><td>'.$row_jr['Occ_Name'].'</td><td></td><td></td></tr>';
+  		echo '<tr><th>หมายเหตุ</th><td>'.$row_jr['Res_Note'].'</td><td></td><td></td></tr>';
+  		echo '<tr><th>วันที่เผยแพร่</th><td>'.$row_jr['Res_Added'].'</td><td></td><td></td></tr>';
+  		echo '<tr><th>วันที่ปรับปรุงล่าสุด</th><td>'.$row_jr['Res_Updated'].'</td><td></td><td></td></tr>';
+  		echo '</table>';
+        echo '</p>';       
+      	echo '</div>';
+      	echo '<div class="w3-container w3-border-top w3-padding-16 w3-light-grey">';
+        echo '<button onclick="document.getElementById(\'jd'.($no).'\').style.display=\'none\'" type="button" class="w3-button w3-red">'._CANCEL.'</button>';
+      	echo '</div></div></div>';
+   	 	/****/
+
+   	 	echo '</td>';
+   	 	// ผู้ใช้สามารถสมัครงานได้มากกว่า 1 ตำแหน่ง
+   	 	$sql_j = "SELECT JR.*,R.User_ID FROM jobs_resume AS JR INNER JOIN resume AS R ON JR.Res_ID=R.Res_ID AND JR.Job_ID=".$row_jr['Job_ID'];
+   	 	$res_j = $conn->query($sql_j);
+   	 	$row_j = $res_j->fetch_assoc();
+    	echo '<td>';
+    	if ($res_j->num_rows > 0) {
+    		if($row_j['JobRes_Status'] != 20){
+    			echo '<a href="../src/proc_data.php?act=EMPAPPLY&job_id='.$row_j['Job_ID'].'&res_id='.$row_j['Res_ID'].'" class="w3-button w3-yellow w3-center" onClick="return confirmInfo(\'ยืนยันการรับผู้สมัครงาน?\')"><i class="fa fa-check-circle"></i> รับผู้สมัครงาน</a> ';
+    		}else{
+    			echo '<div class="w3-button w3-grey w3-center"><i class="fa fa-address-card-o"></i> พนักงาน</div> ';
+    		}
+    	}
+    	echo '<a href="../src/proc_data.php?act=EMPCAN&job_id='.$row_j['Job_ID'].'&res_id='.$row_j['Res_ID'].'" class="w3-button w3-red w3-center" onClick="return confirmInfo(\'คุณต้องการยกเลิกการจ้างงาน?\')"><i class="fa fa-times-circle"></i> '._CANCEL.'</a>';
+    	echo '</td></tr>';
+	  }
+	  echo '</table>';
+	  echo '</div>';
+	  getPaging($type, $result->num_rows, _PER_PAGE_2, $key);
+	}else{
+		echo '<div class="w3-container">';
+		echo '<div class="w3-center w3-padding-64">';
+		echo '<i class="fa fa-exclamation-triangle"></i> ไม่มีข้อมูลผู้สมัครงาน';
+		echo '</div></div>';
+	}
+} // Apply Job
 
 closeConDB($conn);
 ?>
