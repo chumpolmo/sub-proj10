@@ -20,7 +20,25 @@ if(!isset($_SESSION['sessLoggedIn']) || $_SESSION['sessLoggedIn'] === false){
 }
 ?>
 </head>
-<body class="w3-light-grey">
+<script>
+function getData(t){
+  $(document).ready(function(){
+    $.post("../src/get_data.php",
+    { type: t },
+    function(data, status){
+      let obj = JSON.parse(data);
+      $("#dbfarm").html(obj.farmByUser);
+      $("#dbproduct").html(obj.productByUser);
+      $("#dbemp").html(obj.empByUser);
+      $("#dbaj").html(obj.ajByUser);
+      $("#dbresume").html(obj.resByUser);
+      $("#dbuser").html(obj.userByUser);
+      $("#dbnews").html(obj.newsByUser);
+    });
+  });
+}
+</script>
+<body class="w3-light-grey" onload="getData(3)">
 
 <!-- Top container -->
 <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">

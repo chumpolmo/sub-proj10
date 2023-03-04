@@ -811,13 +811,13 @@ if(isset($_GET['act']) && ($_GET['act'] == 'EMPAPPLY' || $_GET['act'] == 'EMPCAN
 	echo '<span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">การจ้างงาน/รับคนทำงาน</span>';
 	echo '</div>';
 	echo '<div class="w3-center w3-container">';
-	
-	$sql_log = "INSERT INTO logs_jobs_resume (Job_ID, Res_ID, JobRes_Status, JobRes_Note, JobRes_Date) ";
-	$sql_log.= "VALUES($job_id, $res_id, 40, 'ยกเลิกการจ้างงาน', NOW())";
-	$res_log = $conn->query($sql_log);
 
 	if($_GET['act'] == "EMPCAN"){
 		$txt = "ยกเลิกการจ้างงาน";
+		$sql_log = "INSERT INTO logs_jobs_resume (Job_ID, Res_ID, JobRes_Status, JobRes_Note, JobRes_Date) ";
+		$sql_log.= "VALUES($job_id, $res_id, 40, 'ยกเลิกการจ้างงาน', NOW())";
+		$res_log = $conn->query($sql_log);
+
 		$sql_jr = "DELETE FROM jobs_resume ";
 		$sql_jr.= "WHERE (Job_ID=".$job_id." AND Res_ID=".$res_id.")"; // ยกเลิกการจ้างงาน
 	}else{
@@ -839,4 +839,28 @@ if(isset($_GET['act']) && ($_GET['act'] == 'EMPAPPLY' || $_GET['act'] == 'EMPCAN
 	echo '</div>';
 } // Employment
 
+if(isset($_POST['act']) && ($_POST['act'] == 'EMPAPPLYNOW')){
+	$txt = "รับคนทำงาน";
+	$job_id = $_POST['jobId'];
+	$res_id = $_POST['resId'];
+	echo '<br><div class="w3-container">';
+	echo '<div class="w3-card w3-border w3-pale-yellow">';
+	echo '<div class="w3-center w3-padding-64">';
+	echo '<span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">การจ้างงาน/รับคนทำงาน</span>';
+	echo '</div>';
+	echo '<div class="w3-center w3-container">';
+
+	$sql_jr = "INSERT INTO jobs_resume (Job_ID, Res_ID, JobRes_Status, Apply_Date, Accept_Date) ";
+	$sql_jr.= "VALUES ($job_id, $res_id, 20, NOW(), NOW())"; // แจ้งการจ้างงาน
+	$res_jr = $conn->query($sql_jr);
+	if($res_jr){
+		echo '<h3><i class="fa fa-check-circle-o"></i> การ'.$txt.'สำเร็จ กรุณารอสักครู่...</h3>';
+	}else{
+		echo '<h3><i class="fa fa-times-circle-o"></i> การ'.$txt.'ผิดพลาด กรุณาตรวจสอบข้อมูลอีกครั้ง รอสักครู่...</h3>';
+	}
+	echo '<meta http-equiv="refresh" content="2; url=../auths/search_info.php">';
+	echo '<br><br></div>';
+	echo '</div>';
+	echo '</div>';
+} // Employment apply
 ?>

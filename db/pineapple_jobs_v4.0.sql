@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 03, 2023 at 05:58 PM
+-- Generation Time: Mar 04, 2023 at 05:30 PM
 -- Server version: 8.0.32
 -- PHP Version: 8.1.6
 
@@ -112,6 +112,13 @@ CREATE TABLE `jobs_resume` (
   `Accept_Date` timestamp NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `jobs_resume`
+--
+
+INSERT INTO `jobs_resume` (`Job_ID`, `Res_ID`, `JobRes_Status`, `Apply_Date`, `Accept_Date`) VALUES
+(3, 2, 20, '2023-03-03 17:05:20', '2023-03-03 17:05:55');
+
 -- --------------------------------------------------------
 
 --
@@ -133,7 +140,8 @@ CREATE TABLE `logs_jobs_resume` (
 INSERT INTO `logs_jobs_resume` (`Job_ID`, `Res_ID`, `JobRes_Status`, `JobRes_Note`, `JobRes_Date`) VALUES
 (1, 2, 30, 'ยกเลิกการสมัครงาน', '2023-02-28 15:11:05'),
 (2, 2, 40, 'ยกเลิกการจ้างงาน', '2023-03-03 16:51:02'),
-(2, 2, 40, 'ยกเลิกการจ้างงาน', '2023-03-03 16:56:00');
+(2, 2, 40, 'ยกเลิกการจ้างงาน', '2023-03-03 16:56:00'),
+(3, 2, 40, 'ยกเลิกการจ้างงาน', '2023-03-03 17:05:55');
 
 -- --------------------------------------------------------
 
