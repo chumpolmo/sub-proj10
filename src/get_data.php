@@ -6,6 +6,56 @@ include '../libs/functions.php';
 
 $conn = connectDB();
 
+if(isset($_POST['type']) && $_POST['type'] == 'REPBYMONTH'){
+	$dat = "";
+	$farm_id = $_POST['farm_id'];
+	$sql = "SELECT SUM(P.Pro_Quantity) AS Pro_Num, Pro_Title, Pro_Unit, Pro_Month, Pro_Year FROM `product` AS P ";
+	$sql.= "WHERE Pro_Year=".date('Y')." AND `Farm_ID` = ".$farm_id." GROUP BY P.Pro_ID, Pro_Month, Pro_Year";
+	$res = $conn->query($sql);
+
+	$month = array(1=>array(),2=>array(),3=>array(),4=>array(),5=>array(),6=>array(),7=>array(),8=>array(),9=>array(),10=>array(),11=>array(),12=>array());
+	while($row = $res->fetch_assoc()){
+		$month[$row['Pro_Month']][$row['Pro_Title']] = $row['Pro_Num'];
+	}
+
+	$dat = '[';
+	for($i=1; $i<=count($month); $i++){
+	   if(isset($month[$i])){
+		   foreach($month[$i] as $k => $v){
+		   	  $dat.= '{';
+		      //echo "{$k}{$v}{$i}<br>";
+		      $dat.= '"label": "#'.$k.'",';
+			  $dat.= '"data": [ '.$v.' ],';
+			  $dat.= '"backgroundColor": "#FF9900",';
+			  $dat.= '"borderWidth": 1';
+		      $dat.= '},';
+		   }
+		}else{
+		   	  $dat.= '{';
+		      //echo "{$k}{$v}{$i}<br>";
+		      $dat.= '"label": "#",';
+			  $dat.= '"data": [ 0 ],';
+			  $dat.= '"backgroundColor": "#FF9900",';
+			  $dat.= '"borderWidth": 1';
+		      $dat.= '},';
+		}
+	}
+	$dat = trim($dat, ',');
+	$dat.= ']';
+	//print_r($month); die;
+	/**
+              {
+                label: '#ผลผลิตฟาร์ม 1',
+                data: [
+                  12, 19, 3, 5, 2, 3, 7, 8, 2, 6, 0, 4
+                ],
+                backgroundColor: '#FF9900',
+                borderWidth: 1
+              }
+	*/
+	echo $dat;
+} // Graph report
+
 if(isset($_POST['type']) && $_POST['type'] == 34){
 	$no = $_POST['no'];
 	$farm_id = $_POST['farm_id'];
@@ -493,7 +543,8 @@ if(isset($_POST['type']) && ($_POST['type'] == 14)){
 	}
 	$st = $_POST['st'];
 
-	$sql = "SELECT JR.*,R.User_ID FROM jobs_resume AS JR INNER JOIN resume AS R ON JR.Res_ID=R.Res_ID AND R.User_ID=".$_SESSION['sessUserId']." LIMIT $st, "._PER_PAGE_2;
+	$sql = "SELECT JR.*,R.User_ID FROM logs_jobs_resume AS JR INNER JOIN resume AS R ON JR.Res_ID=R.Res_ID AND R.User_ID=".$_SESSION['sessUserId']." LIMIT $st, "._PER_PAGE_2;
+	//$sql = "SELECT JR.*,R.User_ID FROM jobs_resume AS JR INNER JOIN resume AS R ON JR.Res_ID=R.Res_ID AND R.User_ID=".$_SESSION['sessUserId']." LIMIT $st, "._PER_PAGE_2;
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 	  echo '<div class="w3-container">';
@@ -509,7 +560,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 14)){
    	 	$row_j = $res_j->fetch_assoc();
     	echo '<tr><td>'.$row_j['Job_Title'].'</td>';
    	 	echo '<td>'.$row_j['Farm_Name'].'</td>';
-   	 	echo '<td><a onClick="document.getElementById(\'jd'.$row_j['Job_ID'].'\').style.display=\'block\'" class="w3-button w3-green w3-center">รายละเอียด</a>';
+   	 	echo '<td><a onClick="document.getElementById(\'jd'.$row_j['Job_ID'].'\').style.display=\'block\'" class="w3-button w3-green w3-center"><i class="fa fa-eye"></i> รายละเอียด</a>';
 
    	 	/****/
     	echo '<div id="jd'.$row_j['Job_ID'].'" class="w3-modal">';
@@ -541,7 +592,15 @@ if(isset($_POST['type']) && ($_POST['type'] == 14)){
 
    	 	echo '</td>';
     	echo '<td>';
-    	echo '<a class="w3-center w3-text-green">'.getJobResStatus($row['JobRes_Status']).'</a>';
+    	if($row['JobRes_Status'] == 10){
+    		echo '<a class="w3-center w3-text-orange"><i class="fa fa-clock-o"></i> '.getJobResStatus($row['JobRes_Status']).'</a>';
+    	}else if($row['JobRes_Status'] == 20){
+    		echo '<a class="w3-center w3-text-green"><i class="fa fa-check-square-o"></i> '.getJobResStatus($row['JobRes_Status']).'</a>';
+    	}else if($row['JobRes_Status'] == 30){
+    		echo '<a class="w3-center w3-text-red"><i class="fa fa-times-circle-o"></i> '.getJobResStatus($row['JobRes_Status']).'</a>';
+    	}else if($row['JobRes_Status'] == 40){
+    		echo '<a class="w3-center w3-text-grey"><i class="fa fa-times-circle-o"></i> '.getJobResStatus($row['JobRes_Status']).'</a>';
+    	}
     	echo '</td></tr>';
 	  }
 	  echo '</table>';
@@ -864,7 +923,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 26)){
 	   	 	echo '<td>'.$row['Pro_Quantity'].'</td>';
 	   	 	echo '<td>'.$row['Pro_PricePU'].'</td>';
 	   	 	echo '<td>'.$row['Pro_Month'].'/'.$row['Pro_Year'].'</td>';
-	   	 	echo '<td><a onClick="document.getElementById(\'uid'.$row['Pro_ID'].'\').style.display=\'block\'" class="w3-button w3-green w3-center">รายละเอียด</a>';
+	   	 	echo '<td><a onClick="document.getElementById(\'uid'.$row['Pro_ID'].'\').style.display=\'block\'" class="w3-button w3-green w3-center"><i class="fa fa-eye"></i> รายละเอียด</a>';
 
 	   	 	/****/
 	    	echo '<div id="uid'.$row['Pro_ID'].'" class="w3-modal">';
@@ -1215,6 +1274,35 @@ function getJob(t, no){
 		echo '</div></div>';
 	}
 } // Search and apply job
+
+if(isset($_POST['type']) && ($_POST['type'] == 36)){
+	$sql = "SELECT * FROM news ORDER BY News_Added DESC";
+	$res = $conn->query($sql);
+	$num_row = $res->num_rows;
+	while($row = $res->fetch_assoc()){
+	    echo '<div class="w3-display-container mySlides">';
+	    echo '<img src="'.substr($row['News_Photo'], 3).'" style="width:100%">';
+	    echo '<div class="w3-display-topright w3-container w3-padding-32">';
+	    echo '<span class="w3-white w3-padding-large w3-animate-bottom">'.$row['News_Title'].'</span>';
+	    echo '</div>';
+	    echo '</div>';
+	}    
+    echo '<div class="w3-container w3-dark-grey w3-padding w3-xlarge">';
+    echo '<div class="w3-left" onclick="plusDivs(-1)"><i class="fa fa-arrow-circle-left w3-hover-text-teal"></i></div>';
+    echo '<div class="w3-right" onclick="plusDivs(1)"><i class="fa fa-arrow-circle-right w3-hover-text-teal"></i></div>';
+    echo '<div class="w3-center">';
+    for($j=1; $j<=$num_row; $j++){
+		echo '<span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv('.$j.')"></span>';
+	}
+    echo '</div>';
+    echo '</div>';
+?>
+<script>
+var slideIndex = 1;
+showDivs(slideIndex);
+</script>
+<?php
+} // Get news
 
 closeConDB($conn);
 ?>

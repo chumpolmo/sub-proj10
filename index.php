@@ -23,6 +23,11 @@ $(document).ready(function(){
     $("#dbfarm").html(obj.farm);
     $("#dbprod").html(obj.prod);
   });
+  $.post("src/get_data.php",
+  { type: 36 },
+  function(data, status){
+    $("#slnews").html(data);
+  });
 });
 </script>
 </head>
@@ -39,37 +44,8 @@ $(document).ready(function(){
   </div>
 
   <!-- Slideshow -->
-  <div class="w3-container">
-    <div class="w3-display-container mySlides">
-      <img src="figs/figure_0001.jpg" style="width:100%">
-      <div class="w3-display-topright w3-container w3-padding-32">
-        <span class="w3-white w3-padding-large w3-animate-bottom">การทำไซเดอร์สับปะรดเพื่อสุขภาพ</span>
-      </div>
-    </div>
-    <div class="w3-display-container mySlides">
-      <img src="figs/figure_0002.jpg" style="width:100%">
-      <div class="w3-display-topright w3-container w3-padding-32">
-        <span class="w3-white w3-padding-large w3-animate-bottom">ถ่ายทอดเทคโนโลยี</span>
-      </div>
-    </div>
-    <div class="w3-display-container mySlides">
-      <img src="figs/figure_0001.jpg" style="width:100%">
-      <div class="w3-display-topright w3-container w3-padding-32">
-        <span class="w3-white w3-padding-large w3-animate-bottom">สับปะรดอบแห้ง</span>
-      </div>
-    </div>
-
-    <!-- Slideshow next/previous buttons -->
-    <div class="w3-container w3-dark-grey w3-padding w3-xlarge">
-      <div class="w3-left" onclick="plusDivs(-1)"><i class="fa fa-arrow-circle-left w3-hover-text-teal"></i></div>
-      <div class="w3-right" onclick="plusDivs(1)"><i class="fa fa-arrow-circle-right w3-hover-text-teal"></i></div>
-    
-      <div class="w3-center">
-        <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(1)"></span>
-        <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(2)"></span>
-        <span class="w3-tag demodots w3-border w3-transparent w3-hover-white" onclick="currentDiv(3)"></span>
-      </div>
-    </div>
+  <div class="w3-container" id="slnews">
+    <i class="fa fa-refresh w3-text-gray" title="Loading..."></i>
   </div>
   
   <!-- Grid -->
@@ -288,11 +264,6 @@ $(document).ready(function(){
 include 'tpls/footer.php';
 include 'tpls/login.php';
 ?>
-<script>
-  // Slideshow
-  var slideIndex = 1;
-  showDivs(slideIndex);
-</script>
 <script src="js/sp10.js"></script>
 </body>
 </html>

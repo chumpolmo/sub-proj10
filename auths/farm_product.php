@@ -41,9 +41,75 @@ function getData(t, np, st, key=null, f){
     });
   });
 }
+
+function getReport(t, f){
+  $(document).ready(function(){
+    $.post("../src/get_data.php",
+    { type: t, farm_id: f },
+    function(data, status){
+      alert(data);
+      data = JSON.parse(data);
+      //$("#outreport").html(data);
+        const ctx01 = document.getElementById('myChart01');
+        let arr_data = data;
+
+        let arr_labels = [];
+        if(t == 'REPBYYEAR'){
+          for(let i=2018; i<=2028; i++){
+            arr_labels.push(i);
+          }
+        }else if(t == 'REPBYQUATER'){
+          arr_labels = ['ไตรมาส 1','ไตรมาส 2','ไตรมาส 3','ไตรมาส 4'];
+        }else if(t == 'REPBYMONTH'){
+          arr_labels = [
+              'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+          ];
+        }
+        new Chart(ctx01, {
+          type: 'bar',
+          data: {
+            labels: arr_labels,
+            datasets: arr_data
+              /*{
+                label: '#ผลผลิตฟาร์ม',
+                data: [
+                  12, 19, 3, 5, 2, 3, 7, 8, 2, 6, 0, 4
+                ],
+                backgroundColor: '#FF9900',
+                borderWidth: 1
+              },
+              {
+                label: '#ผลผลิตฟาร์ม',
+                data: [
+                  12, 19, 3, 5, 2, 3, 7, 8, 2, 6, 0, 4
+                ],
+                backgroundColor: '#FFA366',
+                borderWidth: 1
+              },
+              {
+                label: '#ผลผลิตฟาร์ม',
+                data: [
+                  12, 19, 3, 5, 2, 3, 7, 8, 2, 6, 0, 4
+                ],
+                backgroundColor: '#CC5200',
+                borderWidth: 1
+              }*/
+            //]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+    });
+  });
+}
 </script>
 </head>
-<body class="w3-light-grey" onload="getData(<?=$t?>, 0, 0, null, <?=$farm_id?>)">
+<body class="w3-light-grey" onload="getData(<?=$t?>, 0, 0, null, <?=$farm_id?>);getReport('REPBYMONTH',<?=$farm_id?>);">
 
 <!-- Top container -->
 <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
@@ -98,16 +164,20 @@ function getData(t, np, st, key=null, f){
   <div id="outproduct" class="w3-container">
     <i class="fa fa-refresh w3-text-gray w3-center" title="Loading..."></i>
   </div>
-  <header class="w3-container" style="padding-top:16px">
-    <h5><b><i class="fa fa-bar-chart-o"></i> รายงานผลผลิต</h5>
-  </header>
-  <div class="w3-container w3-right">
-    <a class="w3-button w3-pale-yellow">รายเดือน</a>
-    <a class="w3-button w3-khaki">รายไตรมาส</a>
-    <a class="w3-button w3-yellow">รายปี</a>
-  </div>
-  <div id="outreport" class="w3-container">
-    <i class="fa fa-refresh w3-text-gray w3-center" title="Loading..."></i>
+  <div class="w3-container">
+    <header class="w3-container" style="padding-top:16px">
+      <h5><b><i class="fa fa-bar-chart-o"></i> รายงานผลผลิต</b></h5>
+    </header>
+    <div class="w3-container w3-right">
+      <a class="w3-button w3-pale-yellow" onclick="getReport('REPBYMONTH',<?=$farm_id?>)">รายเดือน</a>
+      <a class="w3-button w3-khaki">รายไตรมาส</a>
+      <a class="w3-button w3-yellow">รายปี</a>
+    </div>
+    <div id="outreport" class="w3-container">
+      <canvas id="myChart01" style="width:100%;max-width:100%;height: 250px;">
+        <i class="fa fa-refresh w3-text-gray w3-center" title="Loading..."></i>
+      </canvas>
+    </div>
   </div>
   <div class="w3-container w3-padding-16 w3-margin">
     <div class="w3-button w3-yellow"><a href="product_info.php"><i class="fa fa-arrow-left"></i> ย้อนกลับ</a></div>

@@ -313,6 +313,9 @@ if(isset($_GET['act']) == 'APPLYNOW' && $_GET['act'] == 'APPLYNOW'){
 		$sql_jr.= "VALUES($job_id, ".$row['Res_ID'].", 10, NOW(), '0000-00-00 00:00:00');"; // สมัครงาน
 		$res_jr = $conn->query($sql_jr);
 		if($res_jr){
+			$sql_lg = "INSERT INTO logs_jobs_resume (Job_ID, Res_ID, JobRes_Status, JobRes_Note, JobRes_Date) ";
+			$sql_lg.= "VALUES($job_id, ".$row['Res_ID'].", 10, 'สมัครงาน', NOW());"; // สมัครงาน
+			$res_lg = $conn->query($sql_lg);
 			echo '<p>การสมัครงานสำเร็จ กรุณารอการตอบรับจากผู้รับสมัคร<br>';
 			echo 'กรุณารอสักครู่...</p>';
 			echo '<meta http-equiv="refresh" content="3; url=../auths/aj_history.php">';
@@ -816,16 +819,19 @@ if(isset($_GET['act']) && ($_GET['act'] == 'EMPAPPLY' || $_GET['act'] == 'EMPCAN
 		$txt = "ยกเลิกการจ้างงาน";
 		$sql_log = "INSERT INTO logs_jobs_resume (Job_ID, Res_ID, JobRes_Status, JobRes_Note, JobRes_Date) ";
 		$sql_log.= "VALUES($job_id, $res_id, 40, 'ยกเลิกการจ้างงาน', NOW())";
-		$res_log = $conn->query($sql_log);
 
 		$sql_jr = "DELETE FROM jobs_resume ";
 		$sql_jr.= "WHERE (Job_ID=".$job_id." AND Res_ID=".$res_id.")"; // ยกเลิกการจ้างงาน
 	}else{
+		$sql_log = "INSERT INTO logs_jobs_resume (Job_ID, Res_ID, JobRes_Status, JobRes_Note, JobRes_Date) ";
+		$sql_log.= "VALUES($job_id, $res_id, 20, 'ตอบรับเข้าทำงาน', NOW())";
+		
 		$sql_jr = "UPDATE jobs_resume SET JobRes_Status=20, Accept_Date=NOW() ";
 		$sql_jr.= "WHERE (Job_ID=".$job_id." AND Res_ID=".$res_id.")"; // ตอบรับการสมัครงาน
 	}
 	$res_jr = $conn->query($sql_jr);
 	if($res_jr){
+		$res_log = $conn->query($sql_log);
 		echo '<p>การ'.$txt.'สำเร็จ<br>';
 		echo 'กรุณารอสักครู่...</p>';
 		echo '<meta http-equiv="refresh" content="2; url=../auths/emp_form.php?act=EMPADD&job_id='.$job_id.'">';
