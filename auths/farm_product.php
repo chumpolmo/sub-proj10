@@ -47,10 +47,10 @@ function getReport(t, f){
     $.post("../src/get_data.php",
     { type: t, farm_id: f },
     function(data, status){
-      alert(data);
+      alert("Testing...\n"+data);
       data = JSON.parse(data);
       //$("#outreport").html(data);
-        const ctx01 = document.getElementById('myChart01');
+        let ctx01 = document.getElementById('myChart01');
         let arr_data = data;
 
         let arr_labels = [];
@@ -58,43 +58,21 @@ function getReport(t, f){
           for(let i=2018; i<=2028; i++){
             arr_labels.push(i);
           }
-        }else if(t == 'REPBYQUATER'){
+        }else if(t == 'REPBYQUARTER'){
           arr_labels = ['ไตรมาส 1','ไตรมาส 2','ไตรมาส 3','ไตรมาส 4'];
         }else if(t == 'REPBYMONTH'){
           arr_labels = [
               'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
           ];
         }
-        new Chart(ctx01, {
+        
+        if(window.myCharts != undefined)
+          window.myCharts.destroy();
+        window.myCharts = new Chart(ctx01, {
           type: 'bar',
           data: {
             labels: arr_labels,
             datasets: arr_data
-              /*{
-                label: '#ผลผลิตฟาร์ม',
-                data: [
-                  12, 19, 3, 5, 2, 3, 7, 8, 2, 6, 0, 4
-                ],
-                backgroundColor: '#FF9900',
-                borderWidth: 1
-              },
-              {
-                label: '#ผลผลิตฟาร์ม',
-                data: [
-                  12, 19, 3, 5, 2, 3, 7, 8, 2, 6, 0, 4
-                ],
-                backgroundColor: '#FFA366',
-                borderWidth: 1
-              },
-              {
-                label: '#ผลผลิตฟาร์ม',
-                data: [
-                  12, 19, 3, 5, 2, 3, 7, 8, 2, 6, 0, 4
-                ],
-                backgroundColor: '#CC5200',
-                borderWidth: 1
-              }*/
-            //]
           },
           options: {
             scales: {
@@ -170,7 +148,7 @@ function getReport(t, f){
     </header>
     <div class="w3-container w3-right">
       <a class="w3-button w3-pale-yellow" onclick="getReport('REPBYMONTH',<?=$farm_id?>)">รายเดือน</a>
-      <a class="w3-button w3-khaki">รายไตรมาส</a>
+      <a class="w3-button w3-khaki" onclick="getReport('REPBYQUARTER',<?=$farm_id?>)">รายไตรมาส</a>
       <a class="w3-button w3-yellow">รายปี</a>
     </div>
     <div id="outreport" class="w3-container">

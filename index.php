@@ -127,7 +127,8 @@ $(document).ready(function(){
   </div>
   <div class="w3-center">
     <div class="w3-right">
-      <button class="w3-button w3-khaki">รายเดือน</button>
+      <button class="w3-button w3-pale-yellow">รายเดือน</button>
+      <button class="w3-button w3-khaki">รายไตรมาส</button>
       <button class="w3-button w3-yellow">รายปี</button>
     </div>
     <canvas id="myChart01" style="width:100%;max-width:100%;height: 250px;"></canvas>
@@ -166,50 +167,13 @@ $(document).ready(function(){
     </script>
   </div>
 
-  <div class="w3-center w3-padding-64" id="overview">
-    <span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">ภาพรวมผลิตภัณฑ์ชุมชน</span>
-  </div>
-  <div class="w3-center">
-    <div class="w3-right">
-      <button class="w3-button w3-khaki">รายเดือน</button>
-      <button class="w3-button w3-yellow">รายปี</button>
-    </div>
-    <canvas id="myChart02" style="width:100%;max-width:100%;height: 250px;"></canvas>
-    <script>
-      const ctx02 = document.getElementById('myChart02');
-
-      new Chart(ctx02, {
-        type: 'bar',
-        data: {
-          labels: [
-            'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
-          ],
-          datasets: [
-            {
-              label: '#ผลิตภัณฑ์ชุมชน',
-              data: [12, 19, 3, 5, 2, 3, 7, 8, 2, 6, 0, 4],
-              backgroundColor: '#FF9900',
-              borderWidth: 1
-            }
-          ]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
-    </script>
-  </div>
-
   <div class="w3-center w3-padding-64" id="output">
-    <span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">ภาพรวมผลผลิต</span>
+    <span class="w3-xlarge w3-bottombar w3-border-dark-grey w3-padding-16">ภาพรวมผลผลิตจากฟาร์ม</span>
   </div>
   <div class="w3-center">
     <div class="w3-right">
-      <button class="w3-button w3-khaki">รายเดือน</button>
+      <button class="w3-button w3-pale-yellow">รายเดือน</button>
+      <button class="w3-button w3-khaki">รายไตรมาส</button>
       <button class="w3-button w3-yellow">รายปี</button>
     </div>
     <canvas id="myChart03" style="width:100%;max-width:100%;height: 250px;"></canvas>

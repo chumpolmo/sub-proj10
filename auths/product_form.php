@@ -52,8 +52,8 @@ if(!isset($_SESSION['sessLoggedIn']) || $_SESSION['sessLoggedIn'] === false){
   }
   $act = "PRODADD";
   $btn = "บันทึก";
-  $proMonth = $proYear = $proPpu = $proQuan = 0;
-  $proTitle = $proDesc = $proCont = $proPhoto = $proUnit = $farmName = "";
+  $proPpu = $proQuan = 0;
+  $proTitle = $proDesc = $proCont = $proPhoto = $proUnit = $proCycle = $farmName = "";
   if(isset($_GET['act']) && $_GET['act'] == 'PRODUPD'){
     $act = $_GET['act'];
     $btn = "แก้ไข";
@@ -68,8 +68,7 @@ if(!isset($_SESSION['sessLoggedIn']) || $_SESSION['sessLoggedIn'] === false){
     $proCont = $row['Pro_Contact'];
     $proPhoto = $row['Pro_Photo'];
     $proUnit = $row['Pro_Unit'];
-    $proMonth = $row['Pro_Month'];
-    $proYear = $row['Pro_Year'];
+    $proCycle = $row['Pro_Cycle'];
     $proPpu = $row['Pro_PricePU'];
     $proQuan = $row['Pro_Quantity'];
   }else{
@@ -111,29 +110,7 @@ if(!isset($_SESSION['sessLoggedIn']) || $_SESSION['sessLoggedIn'] === false){
                 <th>ราคาต่อหน่วย<i class="w3-text-red">**</i></th>
                 <td><input class="w3-input w3-border" type="number" name="proPpu" id="proPpu" value="<?=$proPpu?>" required></td>
                 <th>ผลผลิต เดือน/ปี<i class="w3-text-red">**</i></th>
-                <td><select name="proMonth" class="w3-border" required>
-                  <option value="">-ระบุเดือน-</option>
-                <?php
-                $months = array("1"=>"มกราคม","2"=>"กุมภาพันธ์","3"=>"มีนาคม","4"=>"เมษายน","5"=>"พฤษภาคม","6"=>"มิถุนายน","7"=>"กรกฎาคม","8"=>"สิงหาคม","9"=>"กันยายน","10"=>"ตุลาคม","11"=>"พฤศจิกายน","12"=>"ธันวาคม");
-                foreach ($months as $key => $value) {
-                  if($key == $row['Pro_Month'])
-                    echo '<option value="'.$key.'" selected>'.$value.'</option>';
-                  else
-                    echo '<option value="'.$key.'">'.$value.'</option>';
-                }
-                ?></select> / 
-                <select name="proYear" class="w3-border" required>
-                  <option value="">-ระบุปี-</option>
-                <?php
-                $y = date("Y");
-                for($i=-5; $i<=5; $i++) {
-                  if(($y+$i) == $row['Pro_Year'])
-                    echo '<option value="'.($y+$i).'" selected>'.($y+$i).'</option>';
-                  else
-                    echo '<option value="'.($y+$i).'">'.($y+$i).'</option>';
-                }
-                ?></select>
-                </td>
+                <td><input type="date" name="proCycle" id="proCycle" value="<?=$proCycle?>" required></td>
               </tr>
               <tr>
                 <th>ข้อมูลติดต่อผลิตภัณฑ์</th>

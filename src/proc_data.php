@@ -595,8 +595,7 @@ if(isset($_POST['act']) == 'PRODADD' && ($_POST['act'] == 'PRODADD' || $_POST['a
 	$proQuan = testInput($_POST['proQuan']);
 	$proUnit = testInput($_POST['proUnit']);
 	$proPpu = testInput($_POST['proPpu']);
-	$proMonth = testInput($_POST['proMonth']);
-	$proYear = testInput($_POST['proYear']);
+	$proCycle = testInput($_POST['proCycle']);
 	$proCont = testInput($_POST['proCont']);
 	$farmId = testInput($_POST['farm_id']);
 	$usrId = $_SESSION['sessUserId'];
@@ -662,11 +661,11 @@ if(isset($_POST['act']) == 'PRODADD' && ($_POST['act'] == 'PRODADD' || $_POST['a
 		$txt = "แก้ไข";
 		$farmId = testInput($_POST['farm_id']);
 		$proId = testInput($_POST['pro_id']);
-		$sql = "UPDATE product SET Pro_Title=\"$proTitle\", Pro_Description=\"$proDesc\", Pro_Photo=\"$proPhoto\", Pro_Quantity=\"$proQuan\", Pro_Unit=\"$proUnit\", Pro_PricePU=\"$proPpu\", Pro_Month=\"$proMonth\", Pro_Year=\"$proYear\", Pro_Contact=\"$proCont\", Pro_Updated=NOW() WHERE Pro_ID=".$proId;
+		$sql = "UPDATE product SET Pro_Title=\"$proTitle\", Pro_Description=\"$proDesc\", Pro_Photo=\"$proPhoto\", Pro_Quantity=\"$proQuan\", Pro_Unit=\"$proUnit\", Pro_PricePU=\"$proPpu\", Pro_Cycle=\"$proCycle\", Pro_Contact=\"$proCont\", Pro_Updated=NOW() WHERE Pro_ID=".$proId;
 	}else{
 		if(empty($proPhoto)) $proPhoto = "../figs/prod_figs/default.png";
-		$sql = "INSERT INTO product (Pro_ID, Pro_Title, Pro_Description, Pro_Photo, Pro_Quantity, Pro_PricePU, Pro_Month, Pro_Year, Pro_Unit, Pro_Contact, Pro_Added, Pro_Updated, Farm_ID) ";
-		$sql.= "VALUES (NULL, \"$proTitle\", \"$proDesc\", \"$proPhoto\", \"$proQuan\", \"$proPpu\", \"$proMonth\", \"$proYear\", \"$proUnit\", \"$proCont\", NOW(), '0000-00-00 00:00:00', $farmId)";
+		$sql = "INSERT INTO product (Pro_ID, Pro_Title, Pro_Description, Pro_Photo, Pro_Quantity, Pro_PricePU, Pro_Cycle, Pro_Unit, Pro_Contact, Pro_Added, Pro_Updated, Farm_ID) ";
+		$sql.= "VALUES (NULL, \"$proTitle\", \"$proDesc\", \"$proPhoto\", \"$proQuan\", \"$proPpu\", \"$proCycle\", \"$proUnit\", \"$proCont\", NOW(), '0000-00-00 00:00:00', $farmId)";
 	}
 	//echo $sql;
 	$result = $conn->query($sql);
