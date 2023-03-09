@@ -36,7 +36,7 @@ function getEmpReport(t, f=null){
     { type: t, farm_id: f },
     function(data, status){
         //alert("Testing...\n"+data);
-        //console.log(data);
+        console.log(data);
         data = JSON.parse(data);
         let ctx01 = document.getElementById('myChart01');
         document.getElementById('myChart01').height = '250px';
