@@ -293,7 +293,7 @@ if($_POST['type'] == 2){
 }
 
 if(isset($_POST['type']) && $_POST['type'] == 3){
-	$sql = "SELECT count(Res_ID) AS Res_Num1 FROM resume";
+	$sql = "SELECT count(Res_ID) AS Res_Num1 FROM logs_jobs_resume WHERE JobRes_Status=10 GROUP BY Res_ID, JobRes_Status";
 	$result = $conn->query($sql);
 	$row = $result->fetch_assoc();
 	echo "{\"apply\":".$row['Res_Num1'].",";
