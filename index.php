@@ -29,9 +29,101 @@ $(document).ready(function(){
     $("#slnews").html(data);
   });
 });
+
+function getEmpReport(t, f=null){
+  $(document).ready(function(){
+    $.post("src/get_data.php",
+    { type: t, farm_id: f },
+    function(data, status){
+        //alert("Testing...\n"+data);
+        //console.log(data);
+        data = JSON.parse(data);
+        let ctx01 = document.getElementById('myChart01');
+        document.getElementById('myChart01').height = '250px';
+        let arr_data = data;
+        let arr_labels = [];
+        if(t == 'REPEMPBYYEAR'){
+          const d = new Date();
+          let year = d.getFullYear();
+          for(let i=parseInt(year-5); i<=parseInt(year); i++){
+            arr_labels.push(i);
+          }
+        }else if(t == 'REPEMPBYQUARTER'){
+          arr_labels = ['ไตรมาส 1','ไตรมาส 2','ไตรมาส 3','ไตรมาส 4'];
+        }else if(t == 'REPEMPBYMONTH'){
+          arr_labels = [
+              'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+          ];
+        }
+        
+        if(window.myCharts01 != undefined)
+          window.myCharts01.destroy();
+        window.myCharts01 = new Chart(ctx01, {
+          type: 'bar',
+          data: {
+            labels: arr_labels,
+            datasets: arr_data
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+    });
+  });
+} // End: getEmpReport
+
+function getProdReport(t, f=null){
+  $(document).ready(function(){
+    $.post("src/get_data.php",
+    { type: t, farm_id: f },
+    function(data, status){
+        //alert("Testing...\n"+data);
+        //console.log(data);
+        data = JSON.parse(data);
+        let ctx02 = document.getElementById('myChart02');
+        document.getElementById('myChart02').height = '250px';
+        let arr_data = data;
+        let arr_labels = [];
+        if(t == 'REPBYYEAR'){
+          const d = new Date();
+          let year = d.getFullYear();
+          for(let i=parseInt(year-5); i<=parseInt(year); i++){
+            arr_labels.push(i);
+          }
+        }else if(t == 'REPBYQUARTER'){
+          arr_labels = ['ไตรมาส 1','ไตรมาส 2','ไตรมาส 3','ไตรมาส 4'];
+        }else if(t == 'REPBYMONTH'){
+          arr_labels = [
+              'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+          ];
+        }
+        
+        if(window.myCharts02 != undefined)
+          window.myCharts02.destroy();
+        window.myCharts02 = new Chart(ctx02, {
+          type: 'bar',
+          data: {
+            labels: arr_labels,
+            datasets: arr_data
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+    });
+  });
+} // End: getProdReport
 </script>
 </head>
-<body>
+<body onload="getEmpReport('REPEMPBYMONTH');getProdReport('REPBYMONTH');">
 
 <?php include 'tpls/menu.php'; ?>
 
@@ -127,44 +219,11 @@ $(document).ready(function(){
   </div>
   <div class="w3-center">
     <div class="w3-right">
-      <button class="w3-button w3-pale-yellow">รายเดือน</button>
-      <button class="w3-button w3-khaki">รายไตรมาส</button>
-      <button class="w3-button w3-yellow">รายปี</button>
+      <a class="w3-button w3-pale-yellow" onclick="getEmpReport('REPEMPBYMONTH')">รายเดือน</a>
+      <a class="w3-button w3-khaki" onclick="getEmpReport('REPEMPBYQUARTER')">รายไตรมาส</a>
+      <a class="w3-button w3-yellow" onclick="getEmpReport('REPEMPBYYEAR')">รายปี</a>
     </div>
     <canvas id="myChart01" style="width:100%;max-width:100%;height: 250px;"></canvas>
-    <script>
-      const ctx01 = document.getElementById('myChart01');
-
-      new Chart(ctx01, {
-        type: 'bar',
-        data: {
-          labels: [
-            'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
-          ],
-          datasets: [
-            {
-              label: '#สมัครงาน',
-              data: [12, 19, 3, 5, 2, 3, 7, 8, 2, 6, 0, 4],
-              backgroundColor: '#FF9900',
-              borderWidth: 1
-            },
-            {
-              label: '#ได้งานทำ',
-              data: [4, 10, 2, 1, 1, 2, 5, 6, 2, 4, 0, 3],
-              backgroundColor: '#00CC66',
-              borderWidth: 1
-            }
-          ]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
-    </script>
   </div>
 
   <div class="w3-center w3-padding-64" id="output">
@@ -172,38 +231,11 @@ $(document).ready(function(){
   </div>
   <div class="w3-center">
     <div class="w3-right">
-      <button class="w3-button w3-pale-yellow">รายเดือน</button>
-      <button class="w3-button w3-khaki">รายไตรมาส</button>
-      <button class="w3-button w3-yellow">รายปี</button>
+      <a class="w3-button w3-pale-yellow" onclick="getProdReport('REPBYMONTH')">รายเดือน</a>
+      <a class="w3-button w3-khaki" onclick="getProdReport('REPBYQUARTER')">รายไตรมาส</a>
+      <a class="w3-button w3-yellow" onclick="getProdReport('REPBYYEAR')">รายปี</a>
     </div>
-    <canvas id="myChart03" style="width:100%;max-width:100%;height: 250px;"></canvas>
-    <script>
-      const ctx03 = document.getElementById('myChart03');
-
-      new Chart(ctx03, {
-        type: 'bar',
-        data: {
-          labels: [
-            'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
-          ],
-          datasets: [
-            {
-              label: '#ผลผลิตฟาร์ม (หน่วย)',
-              data: [12, 19, 3, 5, 2, 3, 7, 8, 2, 6, 0, 4],
-              backgroundColor: '#FF9900',
-              borderWidth: 1
-            }
-          ]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
-    </script>
+    <canvas id="myChart02" style="width:100%;max-width:100%;height: 250px;"></canvas>
     <div class="w3-left">
       <div>หมายเหตุ แสดงรายการผลผลิตในภาพรวมจากฟาร์มที่ปรากฎในระบบ</div>
     </div>

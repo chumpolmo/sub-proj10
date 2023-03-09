@@ -110,7 +110,7 @@ if(!isset($_SESSION['sessLoggedIn']) || $_SESSION['sessLoggedIn'] === false){
                 <th>ราคาต่อหน่วย<i class="w3-text-red">**</i></th>
                 <td><input class="w3-input w3-border" type="number" name="proPpu" id="proPpu" value="<?=$proPpu?>" required></td>
                 <th>ผลผลิต เดือน/ปี<i class="w3-text-red">**</i></th>
-                <td><input type="date" name="proCycle" id="proCycle" value="<?=$proCycle?>" required></td>
+                <td><input type="date" name="proCycle" id="proCycle" value="<?=$proCycle?>" class="w3-input w3-border" required></td>
               </tr>
               <tr>
                 <th>ข้อมูลติดต่อผลิตภัณฑ์</th>

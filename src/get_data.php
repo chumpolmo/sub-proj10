@@ -10,19 +10,23 @@ $conn = connectDB();
 $color = array("#FF9900", "#FF9933", "#FFFF66", "#669900", "#FF9999", "#FF6666", "#FF8533", "#B3B300", "#BFFF80", "#66CCFF");
 $data_bg = array();
 
+// For Product Report
 if(isset($_POST['type']) && $_POST['type'] == 'REPBYMONTH'){
 	$dat = "";
-	$farm_id = $_POST['farm_id'];
+	$cond = "";
+	if(isset($_POST['farm_id']) && !empty($_POST['farm_id'])){
+		$farm_id = $_POST['farm_id'];
+		$cond = "AND Farm_ID = ".$farm_id;
+	}
 	// Report by Month
-	$sql = "SELECT SUM(P.Pro_Quantity) AS Pro_Num, Pro_Title, Pro_Unit, MONTH(P.Pro_Cycle) AS Pro_Month, YEAR(P.Pro_Cycle) AS Pro_Year FROM product AS P ";
-	$sql.= "WHERE YEAR(P.Pro_Cycle)=".date('Y')." AND Farm_ID = ".$farm_id." GROUP BY P.Pro_ID, Pro_Month, Pro_Year";
-	$res = $conn->query($sql);
-
 	$data_ind = array(0,0,0,0,0,0,0,0,0,0,0,0);
 	$month = array(1=>array(),2=>array(),3=>array(),4=>array(),5=>array(),6=>array(),7=>array(),8=>array(),9=>array(),10=>array(),11=>array(),12=>array());
+	$sql = "SELECT P.Pro_ID, SUM(P.Pro_Quantity) AS Pro_Num, P.Pro_Title, P.Pro_Unit, MONTH(P.Pro_Cycle) AS Pro_Month, YEAR(P.Pro_Cycle) AS Pro_Year FROM product AS P ";
+	$sql.= "WHERE YEAR(P.Pro_Cycle)=".date('Y')." $cond GROUP BY P.Pro_ID, Pro_Month, Pro_Year";
+	$res = $conn->query($sql);
 	while($row = $res->fetch_assoc()){
-		$month[$row['Pro_Month']][$row['Pro_Title']] = $row['Pro_Num'];
-		$data_bg[$row['Pro_Title']] = $color[rand(0,9)];
+		$month[$row['Pro_Month']][$row['Pro_Title'].' ('.$row['Pro_Unit'].')'] = $row['Pro_Num'];
+		$data_bg[$row['Pro_Title'].' ('.$row['Pro_Unit'].')'] = $color[rand(0,9)];
 	}
 
 	$dat = '[';
@@ -42,24 +46,26 @@ if(isset($_POST['type']) && $_POST['type'] == 'REPBYMONTH'){
 	}
 	$dat = trim($dat, ',');
 	$dat.= ']';
-	//print_r($data_ind);
-	//die;
 	echo $dat;
 } // Graph report by month
 
 if(isset($_POST['type']) && $_POST['type'] == 'REPBYQUARTER'){
 	$dat = "";
-	$farm_id = $_POST['farm_id'];
+	$cond = "";
+	if(isset($_POST['farm_id']) && !empty($_POST['farm_id'])){
+		$farm_id = $_POST['farm_id'];
+		$cond = "AND Farm_ID = ".$farm_id;
+	}
 	// Report by Quarter
-	$sql = "SELECT QUARTER(P.Pro_Cycle) AS Quarter, SUM(P.Pro_Quantity) AS Pro_Num, P.Pro_Title FROM product AS P ";
-	$sql.= "WHERE YEAR(P.Pro_Cycle)=".date('Y')." AND P.Farm_ID = ".$farm_id." GROUP BY Quarter, P.Pro_ID";
+	$sql = "SELECT P.Pro_ID, QUARTER(P.Pro_Cycle) AS Quarter, SUM(P.Pro_Quantity) AS Pro_Num, P.Pro_Title, P.Pro_Unit FROM product AS P ";
+	$sql.= "WHERE YEAR(P.Pro_Cycle)=".date('Y')." $cond GROUP BY Quarter, P.Pro_ID";
 	$res = $conn->query($sql);
 
 	$data_ind = array(0,0,0,0);
 	$quarter = array(1=>array(),2=>array(),3=>array(),4=>array());
 	while($row = $res->fetch_assoc()){
-		$quarter[$row['Quarter']][$row['Pro_Title']] = $row['Pro_Num'];
-		$data_bg[$row['Pro_Title']] = $color[rand(0,9)];
+		$quarter[$row['Quarter']][$row['Pro_Title'].' ('.$row['Pro_Unit'].')'] = $row['Pro_Num'];
+		$data_bg[$row['Pro_Title'].' ('.$row['Pro_Unit'].')'] = $color[rand(0,9)];
 	}
 
 	$dat = '[';
@@ -81,6 +87,170 @@ if(isset($_POST['type']) && $_POST['type'] == 'REPBYQUARTER'){
 	$dat.= ']';
 	echo $dat;
 } // Graph report by quarter
+
+if(isset($_POST['type']) && $_POST['type'] == 'REPBYYEAR'){
+	$dat = "";
+	$cond = "";
+	if(isset($_POST['farm_id']) && !empty($_POST['farm_id'])){
+		$farm_id = $_POST['farm_id'];
+		$cond = "AND Farm_ID = ".$farm_id;
+	}
+	// Report by Year
+	$data_year = array(0,0,0,0,0,0);
+	$data_ind = array(0,0,0,0,0,0);
+	$month = array((DATE('Y')-5)=>array(),(DATE('Y')-4)=>array(),(DATE('Y')-3)=>array(),(DATE('Y')-2)=>array(),(DATE('Y')-1)=>array(),DATE('Y')=>array());
+	$sql = "SELECT P.Pro_ID, SUM(P.Pro_Quantity) AS Pro_Num, P.Pro_Title, P.Pro_Unit, YEAR(P.Pro_Cycle) AS Pro_Year FROM product AS P ";
+	$sql.= "WHERE YEAR(P.Pro_Cycle)=".date('Y')." $cond GROUP BY P.Pro_ID, Pro_Year";
+	$res = $conn->query($sql);
+	while($row = $res->fetch_assoc()){
+		$month[$row['Pro_Year']][$row['Pro_Title'].' ('.$row['Pro_Unit'].')'] = $row['Pro_Num'];
+		$data_bg[$row['Pro_Title'].' ('.$row['Pro_Unit'].')'] = $color[rand(0,9)];
+	}
+	$dat = '[';
+	$ind = (DATE('Y')-5);
+	$j = 5;
+	for($i=$ind; $i<($ind + count($month)); $i++){
+		$data_ind = array(0,0,0,0,0,0);
+	   	if(isset($month[$i])){
+		   foreach($month[$i] as $k => $v){
+		   	  $data_ind[($i-DATE('Y'))+$j] = $v;
+		   	  $dat.= '{';
+		      $dat.= '"label": "#'.$k.'",';
+			  $dat.= '"data": '.json_encode($data_ind).',';
+			  $dat.= '"backgroundColor": "'.$data_bg[$k].'",';
+			  $dat.= '"borderWidth": 1';
+		      $dat.= '},';
+		   }
+		}
+	}
+	$dat = trim($dat, ',');
+	$dat.= ']';
+	echo $dat;
+} // Graph report by year
+
+// For Employment Report
+if(isset($_POST['type']) && $_POST['type'] == 'REPEMPBYMONTH'){
+	$dat = "";
+	$cond = "";
+	if(isset($_POST['farm_id']) && !empty($_POST['farm_id'])){
+		$farm_id = $_POST['farm_id'];
+		$cond = "AND J.Farm_ID = ".$farm_id;
+	}
+	// Report by Month
+	$data_ind = array(0,0,0,0,0,0,0,0,0,0,0,0);
+	$month = array(1=>array(),2=>array(),3=>array(),4=>array(),5=>array(),6=>array(),7=>array(),8=>array(),9=>array(),10=>array(),11=>array(),12=>array());
+	$sql = "SELECT COUNT(JR.Res_ID) AS Res_Num, MONTH(JR.Apply_Date) AS JR_Month, YEAR(JR.Apply_Date) AS JR_Year, JR.JobRes_Status, F.Farm_Name ";
+	$sql.= "FROM jobs_resume AS JR INNER JOIN jobs AS J ON JR.Job_ID=J.Job_ID ";
+	$sql.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID ";
+	$sql.= "WHERE (JR.JobRes_Status=10 OR JR.JobRes_Status=20) AND (YEAR(JR.Apply_Date)=".date('Y').") $cond GROUP BY JR.Res_ID, JR.JobRes_Status, JR_Month, JR_Year";
+	//echo $sql;
+	$res = $conn->query($sql);
+	while($row = $res->fetch_assoc()){
+		$month[$row['JR_Month']][getJobResStatus($row['JobRes_Status'])] = $row['Res_Num'];
+		$data_bg[getJobResStatus($row['JobRes_Status'])] = $color[rand(0,9)];
+	}
+	//print_r($month);
+	$dat = '[';
+	for($i=1; $i<=count($month); $i++){
+		$data_ind = array(0,0,0,0,0,0,0,0,0,0,0,0);
+	   	if(isset($month[$i])){
+		   foreach($month[$i] as $k => $v){
+		   	  $data_ind[($i-1)] = $v;
+		   	  $dat.= '{';
+		      $dat.= '"label": "#'.$k.'",';
+			  $dat.= '"data": '.json_encode($data_ind).',';
+			  $dat.= '"backgroundColor": "'.$data_bg[$k].'",';
+			  $dat.= '"borderWidth": 1';
+		      $dat.= '},';
+		   }
+		}
+	}
+	$dat = trim($dat, ',');
+	$dat.= ']';
+	echo $dat;
+} // Graph report by month
+
+if(isset($_POST['type']) && $_POST['type'] == 'REPEMPBYQUARTER'){
+	$dat = "";
+	$cond = "";
+	if(isset($_POST['farm_id']) && !empty($_POST['farm_id'])){
+		$farm_id = $_POST['farm_id'];
+		$cond = "AND J.Farm_ID = ".$farm_id;
+	}
+	// Report by Quarter
+	$sql = "SELECT COUNT(JR.Res_ID) AS Res_Num, QUARTER(JR.Apply_Date) AS Quarter, JR.JobRes_Status, F.Farm_Name ";
+	$sql.= "FROM jobs_resume AS JR INNER JOIN jobs AS J ON JR.Job_ID=J.Job_ID ";
+	$sql.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID ";
+	$sql.= "WHERE (JR.JobRes_Status=10 OR JR.JobRes_Status=20) AND (YEAR(JR.Apply_Date)=".date('Y').") $cond GROUP BY JR.Res_ID, JR.JobRes_Status, Quarter";
+	$res = $conn->query($sql);
+	$data_ind = array(0,0,0,0);
+	$quarter = array(1=>array(),2=>array(),3=>array(),4=>array());
+	while($row = $res->fetch_assoc()){
+		$quarter[$row['Quarter']][getJobResStatus($row['JobRes_Status'])] = $row['Res_Num'];
+		$data_bg[getJobResStatus($row['JobRes_Status'])] = $color[rand(0,9)];
+	}
+
+	$dat = '[';
+	for($i=1; $i<=count($quarter); $i++){
+		$data_ind = array(0,0,0,0);
+	   	if(isset($quarter[$i])){
+		   foreach($quarter[$i] as $k => $v){
+		   	  $data_ind[($i-1)] = $v;
+		   	  $dat.= '{';
+		      $dat.= '"label": "#'.$k.'",';
+			  $dat.= '"data": '.json_encode($data_ind).',';
+			  $dat.= '"backgroundColor": "'.$data_bg[$k].'",';
+			  $dat.= '"borderWidth": 1';
+		      $dat.= '},';
+		   }
+		}
+	}
+	$dat = trim($dat, ',');
+	$dat.= ']';
+	echo $dat;
+} // Graph report by quarter
+
+if(isset($_POST['type']) && $_POST['type'] == 'REPEMPBYYEAR'){
+	$dat = "";
+	$cond = "";
+	if(isset($_POST['farm_id']) && !empty($_POST['farm_id'])){
+		$farm_id = $_POST['farm_id'];
+		$cond = "AND J.Farm_ID = ".$farm_id;
+	}
+	// Report by Year
+	$sql = "SELECT COUNT(JR.Res_ID) AS Res_Num, YEAR(JR.Apply_Date) AS JR_Year, JR.JobRes_Status, F.Farm_Name ";
+	$sql.= "FROM jobs_resume AS JR INNER JOIN jobs AS J ON JR.Job_ID=J.Job_ID ";
+	$sql.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID ";
+	$sql.= "WHERE (JR.JobRes_Status=10 OR JR.JobRes_Status=20) AND (YEAR(JR.Apply_Date)=".date('Y').") $cond GROUP BY JR.Res_ID, JR.JobRes_Status, JR_Year";
+	$res = $conn->query($sql);
+	$data_ind = array(0,0,0,0,0,0);
+	$month = array(1=>array(),2=>array(),3=>array(),4=>array(),5=>array(),6=>array());
+	while($row = $res->fetch_assoc()){
+		$month[$row['JR_Year']][getJobResStatus($row['JobRes_Status'])] = $row['Res_Num'];
+		$data_bg[getJobResStatus($row['JobRes_Status'])] = $color[rand(0,9)];
+	}
+
+	$dat = '[';
+	$ind = (DATE('Y')-5);
+	$j = 5;
+	for($i=$ind; $i<($ind + count($month)); $i++){
+		$data_ind = array(0,0,0,0,0,0);
+	   	if(isset($month[$i])){
+		   foreach($month[$i] as $k => $v){
+		   	  $data_ind[($i-DATE('Y'))+$j] = $v;
+		   	  $dat.= '{';
+		      $dat.= '"label": "#'.$k.'",';
+			  $dat.= '"data": '.json_encode($data_ind).',';
+			  $dat.= '"backgroundColor": "'.$data_bg[$k].'",';
+			  $dat.= '"borderWidth": 1';
+		      $dat.= '},';
+		   }
+		}
+	}
+	$dat = trim($dat, ',');
+	$dat.= ']';
+	echo $dat;
+} // Graph report by year
 
 if(isset($_POST['type']) && $_POST['type'] == 34){
 	$no = $_POST['no'];
@@ -946,7 +1116,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 26)){
 		while($row = $result->fetch_assoc()) {
 	    	echo '<tr><td>'.$row['Pro_ID'].'</td>';
 	   	 	echo '<td>'.$row['Pro_Title'].'</td>';
-	   	 	echo '<td>'.$row['Pro_Quantity'].'</td>';
+	   	 	echo '<td>'.$row['Pro_Quantity'].' '.$row['Pro_Unit'].'</td>';
 	   	 	echo '<td>'.$row['Pro_PricePU'].'</td>';
 	   	 	echo '<td>'.$row['Pro_Cycle'].'</td>';
 	   	 	echo '<td><a onClick="document.getElementById(\'uid'.$row['Pro_ID'].'\').style.display=\'block\'" class="w3-button w3-green w3-center"><i class="fa fa-eye"></i> รายละเอียด</a>';

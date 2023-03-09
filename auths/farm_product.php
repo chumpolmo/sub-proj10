@@ -42,20 +42,22 @@ function getData(t, np, st, key=null, f){
   });
 }
 
-function getReport(t, f){
+function getReport(t, f=null){
   $(document).ready(function(){
     $.post("../src/get_data.php",
     { type: t, farm_id: f },
     function(data, status){
-      alert("Testing...\n"+data);
-      data = JSON.parse(data);
-      //$("#outreport").html(data);
+        //alert("Testing...\n"+data);
+        console.log(data);
+        data = JSON.parse(data);
         let ctx01 = document.getElementById('myChart01');
+        document.getElementById('myChart01').height = '250px';
         let arr_data = data;
-
         let arr_labels = [];
         if(t == 'REPBYYEAR'){
-          for(let i=2018; i<=2028; i++){
+          const d = new Date();
+          let year = d.getFullYear();
+          for(let i=parseInt(year-5); i<=parseInt(year); i++){
             arr_labels.push(i);
           }
         }else if(t == 'REPBYQUARTER'){
@@ -149,7 +151,7 @@ function getReport(t, f){
     <div class="w3-container w3-right">
       <a class="w3-button w3-pale-yellow" onclick="getReport('REPBYMONTH',<?=$farm_id?>)">รายเดือน</a>
       <a class="w3-button w3-khaki" onclick="getReport('REPBYQUARTER',<?=$farm_id?>)">รายไตรมาส</a>
-      <a class="w3-button w3-yellow">รายปี</a>
+      <a class="w3-button w3-yellow" onclick="getReport('REPBYYEAR')">รายปี</a>
     </div>
     <div id="outreport" class="w3-container">
       <canvas id="myChart01" style="width:100%;max-width:100%;height: 250px;">
