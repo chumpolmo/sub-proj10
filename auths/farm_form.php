@@ -40,11 +40,6 @@ if(!isset($_SESSION['sessLoggedIn']) || $_SESSION['sessLoggedIn'] === false){
 <!-- !PAGE CONTENT! -->
 <div class="w3-main" style="margin-left:300px;margin-top:43px;">
 
-  <!-- Header -->
-  <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-leaf fa-fw"></i> เพิ่มข้อมูลฟาร์ม</b></h5>
-  </header>
-
   <?php
   $act = "FARMADD";
   $btn = "บันทึก";
@@ -70,6 +65,11 @@ if(!isset($_SESSION['sessLoggedIn']) || $_SESSION['sessLoggedIn'] === false){
     $farmPhone = $row['Farm_Phone'];
   }
   ?>
+
+  <!-- Header -->
+  <header class="w3-container" style="padding-top:22px">
+    <h5><b><i class="fa fa-leaf fa-fw"></i> ข้อมูลฟาร์ม</b></h5>
+  </header>
 
   <div id="outuser" class="w3-container">
     <div class="w3-row w3-container">

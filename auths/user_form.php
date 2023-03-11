@@ -66,7 +66,7 @@ function validateEmail(){
 
   <!-- Header -->
   <header class="w3-container" style="padding-top:22px">
-    <h5><b><i class="fa fa-user-circle-o"></i> เพิ่มข้อมูลผู้ใช้งาน</b></h5>
+    <h5><b><i class="fa fa-user-circle-o"></i> ข้อมูลผู้ใช้งาน</b></h5>
   </header>
 
   <?php
