@@ -142,7 +142,7 @@ if(isset($_POST['type']) && $_POST['type'] == 'REPEMPBYMONTH'){
 	$sql = "SELECT COUNT(JR.Res_ID) AS Res_Num, MONTH(JR.JobRes_Date) AS JR_Month, YEAR(JR.JobRes_Date) AS JR_Year, JR.JobRes_Status, F.Farm_Name ";
 	$sql.= "FROM logs_jobs_resume AS JR INNER JOIN jobs AS J ON JR.Job_ID=J.Job_ID ";
 	$sql.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID ";
-	$sql.= "WHERE (JR.JobRes_Status=10 OR JR.JobRes_Status=20) AND (YEAR(JR.JobRes_Date)=".date('Y').") $cond GROUP BY JR.Res_ID, JR.JobRes_Status, JR_Month, JR_Year";
+	$sql.= "WHERE (JR.JobRes_Status=10 OR JR.JobRes_Status=20) AND (YEAR(JR.JobRes_Date)=".date('Y').") $cond GROUP BY JR.JobRes_Status, JR_Month, JR_Year";
 	//echo $sql;
 	$res = $conn->query($sql);
 	while($row = $res->fetch_assoc()){
@@ -181,7 +181,7 @@ if(isset($_POST['type']) && $_POST['type'] == 'REPEMPBYQUARTER'){
 	$sql = "SELECT COUNT(JR.Res_ID) AS Res_Num, QUARTER(JR.JobRes_Date) AS Quarter, JR.JobRes_Status, F.Farm_Name ";
 	$sql.= "FROM logs_jobs_resume AS JR INNER JOIN jobs AS J ON JR.Job_ID=J.Job_ID ";
 	$sql.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID ";
-	$sql.= "WHERE (JR.JobRes_Status=10 OR JR.JobRes_Status=20) AND (YEAR(JR.JobRes_Date)=".date('Y').") $cond GROUP BY JR.Res_ID, JR.JobRes_Status, Quarter";
+	$sql.= "WHERE (JR.JobRes_Status=10 OR JR.JobRes_Status=20) AND (YEAR(JR.JobRes_Date)=".date('Y').") $cond GROUP BY JR.JobRes_Status, Quarter";
 	$res = $conn->query($sql);
 	$data_ind = array(0,0,0,0);
 	$quarter = array(1=>array(),2=>array(),3=>array(),4=>array());
@@ -221,7 +221,7 @@ if(isset($_POST['type']) && $_POST['type'] == 'REPEMPBYYEAR'){
 	$sql = "SELECT COUNT(JR.Res_ID) AS Res_Num, YEAR(JR.JobRes_Date) AS JR_Year, JR.JobRes_Status, F.Farm_Name ";
 	$sql.= "FROM logs_jobs_resume AS JR INNER JOIN jobs AS J ON JR.Job_ID=J.Job_ID ";
 	$sql.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID ";
-	$sql.= "WHERE (JR.JobRes_Status=10 OR JR.JobRes_Status=20) AND (YEAR(JR.JobRes_Date)=".date('Y').") $cond GROUP BY JR.Res_ID, JR.JobRes_Status, JR_Year";
+	$sql.= "WHERE (JR.JobRes_Status=10 OR JR.JobRes_Status=20) AND (YEAR(JR.JobRes_Date)=".date('Y').") $cond GROUP BY JR.JobRes_Status, JR_Year";
 	$res = $conn->query($sql);
 	$data_ind = array(0,0,0,0,0,0);
 	$month = array(1=>array(),2=>array(),3=>array(),4=>array(),5=>array(),6=>array());
@@ -293,7 +293,8 @@ if($_POST['type'] == 2){
 }
 
 if(isset($_POST['type']) && $_POST['type'] == 3){
-	$sql = "SELECT count(Res_ID) AS Res_Num1 FROM logs_jobs_resume WHERE JobRes_Status=10 GROUP BY Res_ID, JobRes_Status";
+	//$sql = "SELECT count(Res_ID) AS Res_Num1 FROM logs_jobs_resume WHERE JobRes_Status=10 GROUP BY Res_ID, JobRes_Status";
+	$sql = "SELECT count(Res_ID) AS Res_Num1 FROM logs_jobs_resume WHERE JobRes_Status=10";
 	$result = $conn->query($sql);
 	$row = $result->fetch_assoc();
 	echo "{\"apply\":".$row['Res_Num1'].",";
