@@ -20,9 +20,9 @@ if(!isset($_SESSION['sessLoggedIn']) || $_SESSION['sessLoggedIn'] === false){
 }
 
 // Check action type
-$t = 28;
+$t = 38;
 if(isset($_POST['type'])){
-  $t = 29;
+  $t = 39;
 }
 ?>
 <script>
