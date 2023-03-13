@@ -1566,10 +1566,10 @@ if(isset($_POST['type']) && ($_POST['type'] == 38)){
     	$sql_emp = "SELECT COUNT(Res_ID) AS EMP FROM jobs_resume WHERE Job_ID=".$row['Job_ID'];
     	$res_emp = $conn->query($sql_emp);
     	$row_emp = $res_emp->fetch_assoc();
+    	echo '<a href="job_form.php?act=JOBUPD&job_id='.$row['Job_ID'].'" class="w3-center w3-orange w3-button"><i class="fa fa-edit"></i> แก้ไข</a> ';
     	if($row_emp['EMP'] > 0){
     		echo '<a href="emp_form.php?act=EMPADD&job_id='.$row['Job_ID'].'" class="w3-center w3-blue w3-button"><i class="fa fa-user-plus"></i> '.$row_emp['EMP'].' ข้อมูล</a>';
     	}else{
-	    	echo '<a href="job_form.php?act=JOBUPD&job_id='.$row['Job_ID'].'" class="w3-center w3-orange w3-button"><i class="fa fa-edit"></i> แก้ไข</a> ';
 	    	echo '<a href="../src/proc_data.php?act=JOBDEL&job_id='.$row['Job_ID'].'" class="w3-center w3-red w3-button" onClick="return confirmInfo(\'ยืนยันการลบประกาศจ้างงาน?\')"><i class="fa fa-trash"></i> ลบ</a>';
     	}
     	/****/
