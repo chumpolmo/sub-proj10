@@ -6,6 +6,9 @@ include '../libs/functions.php';
 
 $conn = connectDB();
 
+// Default page number
+$pagenum = 1;
+
 // For Chart Report
 $color = array("#FF9900", "#FF9933", "#FFFF66", "#669900", "#FF9999", "#FF6666", "#FF8533", "#B3B300", "#BFFF80", "#66CCFF");
 $data_bg = array();
@@ -299,7 +302,7 @@ if(isset($_POST['type']) && $_POST['type'] == 3){
 	$row = $result->fetch_assoc();
 	echo "{\"apply\":".$row['Res_Num1'].",";
 
-	$sql = "SELECT count(Res_ID) AS Res_Num2 FROM jobs_resume WHERE JobRes_Status=20"; // ได้งานทำ
+	$sql = "SELECT count(Res_ID) AS Res_Num2 FROM logs_jobs_resume WHERE JobRes_Status=20"; // ได้งานทำ
 	$result = $conn->query($sql);
 	$row = $result->fetch_assoc();
 	echo "\"accept\":".$row['Res_Num2'].",";
@@ -372,12 +375,15 @@ if($_POST['type'] == 4){
 	}
 	$st = $_POST['st'];
 
+	$sqlTmp = "SELECT J.Job_ID, J.Job_Title, F.Farm_Name FROM jobs AS J INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID $cond";
+	$resultTmp = $conn->query($sqlTmp);
+
 	$sql = "SELECT J.Job_ID, J.Job_Title, F.Farm_Name FROM jobs AS J INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID $cond LIMIT $st, "._PER_PAGE_1;
 	$result = $conn->query($sql);
 
 	if ($result->num_rows > 0) {
 	  echo '<div class="w3-container">';
-	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$result->num_rows.' รายการ';
+	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$resultTmp->num_rows.' รายการ';
 	  echo '</div>';
 	  echo '<div class="w3-container">';
 	  while($row = $result->fetch_assoc()) {
@@ -389,7 +395,7 @@ if($_POST['type'] == 4){
     	echo '</div></div>';
 	  }
 	  echo '</div>';
-	  getPaging($type, $result->num_rows, _PER_PAGE_1, $key);
+	  getPaging($type, $result->num_rows, _PER_PAGE_1, $key, $pagenum);
 	} else {
     	echo '<div class="w3-col l4 m4 w3-pale-yellow w3-container w3-padding-16 w3-border-left w3-border-bottom">';
     	echo '<div class="w3-container">';
@@ -435,12 +441,15 @@ if($_POST['type'] == 5){
 	}
 	$st = $_POST['st'];
 
+	$sqlTmp = "SELECT P.Pro_ID, P.Pro_Photo, P.Pro_Title FROM product AS P $cond";
+	$resultTmp = $conn->query($sqlTmp);
+
 	$sql = "SELECT P.Pro_ID, P.Pro_Photo, P.Pro_Title FROM product AS P $cond LIMIT $st, "._PER_PAGE_1;
 	$result = $conn->query($sql);
 
 	if ($result->num_rows > 0) {
 	  echo '<div class="w3-container">';
-	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$result->num_rows.' รายการ';
+	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$resultTmp->num_rows.' รายการ';
 	  echo '</div>';
 	  echo '<div class="w3-container">';
 	  while($row = $result->fetch_assoc()) {
@@ -453,7 +462,7 @@ if($_POST['type'] == 5){
     	echo '</div>';
 	  }
 	  echo '</div>';
-	  getPaging($type, $result->num_rows, _PER_PAGE_1, $key);
+	  getPaging($type, $result->num_rows, _PER_PAGE_1, $key, $pagenum);
 	} else {
     	echo '<div class="w3-col l4 m4 w3-pale-yellow w3-container w3-padding-16 w3-border-left w3-border-bottom">';
     	echo '<div class="w3-container">';
@@ -467,17 +476,17 @@ if($_POST['type'] == 6){
 	$result = $conn->query($sql);
 	$row = $result->fetch_assoc();
 
-  echo '<h5><i class="fa fa-shopping-cart"></i> ชื่อผลิตภัณฑ์: '.$row['Pro_Title'].'</h5>';
-  echo '<table class="w3-table-all w3-hoverable">';
-  echo '<tr><td rowspan="7" width="40%"><img src="figs/'.$row['Pro_Photo'].'" style="width:100%;">';
-  echo '</td><th>รายละเอียด</th><td>'.$row['Pro_Description'].'</td></tr>';
-  echo '<tr><th>จำนวน</th><td>'.$row['Pro_Quantity'].' '.$row['Pro_Unit'].'</td></tr>';
-  echo '<tr><th>ราคาต่อหน่วย</th><td>'.$row['Pro_PricePU'].' '._THB.'</td></tr>';
-  echo '<tr><th>สนใจผลิตภัณฑ์ติดต่อ</th><td>'.$row['Pro_Contact'].'</td></tr>';
-  echo '<tr><th>เริ่มเผยแพร่</th><td>'.$row['Pro_Added'].'</td></tr>';
-  echo '<tr><th>ปรับปรุงล่าสุด</th><td>'.$row['Pro_Updated'].'</td></tr>';
+	echo '<h5><i class="fa fa-shopping-cart"></i> ชื่อผลิตภัณฑ์: '.$row['Pro_Title'].'</h5>';
+	echo '<table class="w3-table-all w3-hoverable">';
+	echo '<tr><td rowspan="7" width="40%"><img src="figs/'.$row['Pro_Photo'].'" style="width:100%;">';
+	echo '</td><th>รายละเอียด</th><td>'.$row['Pro_Description'].'</td></tr>';
+	echo '<tr><th>จำนวน</th><td>'.$row['Pro_Quantity'].' '.$row['Pro_Unit'].'</td></tr>';
+	echo '<tr><th>ราคาต่อหน่วย</th><td>'.$row['Pro_PricePU'].' '._THB.'</td></tr>';
+	echo '<tr><th>สนใจผลิตภัณฑ์ติดต่อ</th><td>'.$row['Pro_Contact'].'</td></tr>';
+	echo '<tr><th>เริ่มเผยแพร่</th><td>'.$row['Pro_Added'].'</td></tr>';
+	echo '<tr><th>ปรับปรุงล่าสุด</th><td>'.$row['Pro_Updated'].'</td></tr>';
 	echo '<tr><th>ผู้เผยแพร่ผลิตภัณฑ์</th><td>'.$row['Farm_Name'].'</td></tr>';
-  echo '</table>';
+  	echo '</table>';
 }
 
 if($_POST['type'] == 7){
@@ -497,17 +506,17 @@ if(isset($_POST['type']) && $_POST['type'] == 8){
 	$result = $conn->query($sql);
 	$row = $result->fetch_assoc();
 
-  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
-  echo '<tr><th width="30%">อีเมล (E-mail)</th><td>'.$row['User_Email'].'</td></tr>';
+	echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
+	echo '<tr><th width="30%">อีเมล (E-mail)</th><td>'.$row['User_Email'].'</td></tr>';
 	echo '<tr><th>รหัสผ่าน</th><td>********</td></tr>';  
-  echo '<tr><th>ชื่อ-สกุล</th><td>'.$row['User_Fullname'].'</td></tr>';
-  echo '<tr><th>ประเภทผู้ใช้งาน</th><td>'.getUsrStatus($row['User_Type']).'</td></tr>';
-  echo '<tr><th>การเปิดใช้งาน</th><td>'.getActiveStatus($row['User_Active']).'</td></tr>';
-  echo '<tr><th>วันที่สมัคร</th><td>'.$row['User_Added'].'</td></tr>';
-  echo '<tr><th>วันที่ปรับปรุงล่าสุด</th><td>'.$row['User_Updated'].'</td></tr>';
-  echo '<tr><th></th><td><a href="user_setting.php" class="w3-button w3-orange"><i class="fa fa-pencil-square-o"></i> แก้ไขข้อมูล</a></td></tr>';
-  echo '</table><br>';
-  echo '<a href="index.php" class="w3-button w3-yellow"><i class="fa fa-arrow-left"></i> กลับหน้าแรก</a>';
+	echo '<tr><th>ชื่อ-สกุล</th><td>'.$row['User_Fullname'].'</td></tr>';
+	echo '<tr><th>ประเภทผู้ใช้งาน</th><td>'.getUsrStatus($row['User_Type']).'</td></tr>';
+	echo '<tr><th>การเปิดใช้งาน</th><td>'.getActiveStatus($row['User_Active']).'</td></tr>';
+	echo '<tr><th>วันที่สมัคร</th><td>'.$row['User_Added'].'</td></tr>';
+	echo '<tr><th>วันที่ปรับปรุงล่าสุด</th><td>'.$row['User_Updated'].'</td></tr>';
+	echo '<tr><th></th><td><a href="user_setting.php" class="w3-button w3-orange"><i class="fa fa-pencil-square-o"></i> แก้ไขข้อมูล</a></td></tr>';
+	echo '</table><br>';
+	echo '<a href="index.php" class="w3-button w3-yellow"><i class="fa fa-arrow-left"></i> กลับหน้าแรก</a>';
 }
 
 if(isset($_POST['type']) && $_POST['type'] == 9){
@@ -654,12 +663,14 @@ if(isset($_POST['type']) && ($_POST['type'] == 12)){
 	}
 	$st = $_POST['st'];
 
+	$sqlTmp = "SELECT J.Job_ID, J.Job_Title, F.Farm_Name FROM jobs AS J INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID $cond";
+	$resultTmp = $conn->query($sqlTmp);
+
 	$sql = "SELECT J.Job_ID, J.Job_Title, F.Farm_Name FROM jobs AS J INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID $cond LIMIT $st, "._PER_PAGE_2;
 	$result = $conn->query($sql);
-
 	if ($result->num_rows > 0) {
 	  echo '<div class="w3-container">';
-	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$result->num_rows.' รายการ';
+	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$resultTmp->num_rows.' รายการ';
 	  echo '</div>';
 	  echo '<div class="w3-container">';
 	  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
@@ -668,7 +679,6 @@ if(isset($_POST['type']) && ($_POST['type'] == 12)){
     	echo '<tr><td>'.$row['Job_Title'].'</td>';
    	 	echo '<td>'.$row['Farm_Name'].'</td>';
    	 	echo '<td><a onClick="document.getElementById(\'jd'.$row['Job_ID'].'\').style.display=\'block\'" class="w3-button w3-green w3-center">รายละเอียด</a>';
-
    	 	/****/
     	echo '<div id="jd'.$row['Job_ID'].'" class="w3-modal">';
     	echo '<div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:640px">';
@@ -723,7 +733,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 12)){
 	  }
 	  echo '</table>';
 	  echo '</div>';
-	  getPaging($type, $result->num_rows, _PER_PAGE_2, $key);
+	  getPaging($type, $result->num_rows, _PER_PAGE_2, $key, $pagenum);
 	}else{
 		echo '<div class="w3-container">';
 		echo '<div class="w3-center w3-padding-64">';
@@ -740,12 +750,15 @@ if(isset($_POST['type']) && ($_POST['type'] == 14)){
 	}
 	$st = $_POST['st'];
 
+	$sqlTmp = "SELECT JR.*,R.User_ID FROM logs_jobs_resume AS JR INNER JOIN resume AS R ON JR.Res_ID=R.Res_ID AND R.User_ID=".$_SESSION['sessUserId'];
+	$resultTmp = $conn->query($sqlTmp);
+
 	$sql = "SELECT JR.*,R.User_ID FROM logs_jobs_resume AS JR INNER JOIN resume AS R ON JR.Res_ID=R.Res_ID AND R.User_ID=".$_SESSION['sessUserId']." LIMIT $st, "._PER_PAGE_2;
 	//$sql = "SELECT JR.*,R.User_ID FROM jobs_resume AS JR INNER JOIN resume AS R ON JR.Res_ID=R.Res_ID AND R.User_ID=".$_SESSION['sessUserId']." LIMIT $st, "._PER_PAGE_2;
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 	  echo '<div class="w3-container">';
-	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$result->num_rows.' รายการ';
+	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$resultTmp->num_rows.' รายการ';
 	  echo '</div>';
 	  echo '<div class="w3-container">';
 	  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
@@ -802,7 +815,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 14)){
 	  }
 	  echo '</table>';
 	  echo '</div>';
-	  getPaging($type, $result->num_rows, _PER_PAGE_2, $key);
+	  getPaging($type, $resultTmp->num_rows, _PER_PAGE_2, $key, $pagenum);
 	}else{
 		echo '<div class="w3-container">';
 		echo '<div class="w3-center w3-padding-64">';
@@ -819,17 +832,22 @@ if(isset($_POST['type']) && ($_POST['type'] == 16)){
 	}
 	$st = $_POST['st'];
 
+	$sqlTmp = "SELECT U.* FROM user AS U";
+	$resultTmp = $conn->query($sqlTmp);
+
+	$i = 0;
 	$sql = "SELECT U.* FROM user AS U LIMIT $st, "._PER_PAGE_2;
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 	  echo '<div class="w3-container">';
-	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$result->num_rows.' รายการ';
+	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$resultTmp->num_rows.' รายการ';
 	  echo '</div>';
 	  echo '<div class="w3-container">';
 	  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
 	  echo '<tr><th>ID</th><th>อีเมล</th><th>ชื่อ-สกุล</th><th>สถานะ</th><th>รายละเอียด</th><th>ดำเนินการ</th></tr>';
 	  while($row = $result->fetch_assoc()) {
-    	echo '<tr><td>'.$row['User_ID'].'</td>';
+		$i++;
+    	echo '<tr><td>'.($i+$st).'</td>';
    	 	echo '<td>'.$row['User_Email'].'</td>';
    	 	echo '<td>'.$row['User_Fullname'].'</td>';
    	 	echo '<td>';
@@ -881,7 +899,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 16)){
 	  }
 	  echo '</table>';
 	  echo '</div>';
-	  getPaging($type, $result->num_rows, _PER_PAGE_2, $key);
+	  getPaging($type, $resultTmp->num_rows, _PER_PAGE_2, $key, $pagenum);
 	}else{
 		echo '<div class="w3-container">';
 		echo '<div class="w3-center w3-padding-64">';
@@ -898,11 +916,14 @@ if(isset($_POST['type']) && ($_POST['type'] == 18)){
 	}
 	$st = $_POST['st'];
 
+	$sqlTmp = "SELECT N.* FROM news AS N";
+	$resultTmp = $conn->query($sqlTmp);
+
 	$sql = "SELECT N.* FROM news AS N LIMIT $st, "._PER_PAGE_2;
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 		echo '<div class="w3-container">';
-		echo '<i class="fa fa-info-circle"></i> จำนวน '.$result->num_rows.' รายการ';
+		echo '<i class="fa fa-info-circle"></i> จำนวน '.$resultTmp->num_rows.' รายการ';
 		echo '</div>';
 		echo '<div class="w3-container">';
 		echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
@@ -949,7 +970,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 18)){
 	  	}
 	  	echo '</table>';
 	  	echo '</div>';
-		getPaging($type, $result->num_rows, _PER_PAGE_2, $key);
+		getPaging($type, $resultTmp->num_rows, _PER_PAGE_2, $key, $pagenum);
 	}else{
 		echo '<div class="w3-container">';
 		echo '<div class="w3-center w3-padding-64">';
@@ -972,6 +993,12 @@ if(isset($_POST['type']) && ($_POST['type'] == 20)){
 	}
 	$st = $_POST['st'];
 
+	$sqlTmp = "SELECT L.*, R.Res_Prefix, R.Res_Name, R.Res_Surname, J.Job_Title, J.Job_Description, F.Farm_Name FROM logs_jobs_resume AS L ";
+	$sqlTmp.= "INNER JOIN resume AS R ON L.Res_ID=R.Res_ID ";
+	$sqlTmp.= "INNER JOIN jobs AS J ON L.Job_ID=J.Job_ID ";
+	$sqlTmp.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID $cond ";
+	$resultTmp = $conn->query($sqlTmp);
+
 	$sql = "SELECT L.*, R.Res_Prefix, R.Res_Name, R.Res_Surname, J.Job_Title, J.Job_Description, F.Farm_Name FROM logs_jobs_resume AS L ";
 	$sql.= "INNER JOIN resume AS R ON L.Res_ID=R.Res_ID ";
 	$sql.= "INNER JOIN jobs AS J ON L.Job_ID=J.Job_ID ";
@@ -980,7 +1007,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 20)){
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 	  	echo '<div class="w3-container">';
-	  	echo '<i class="fa fa-info-circle"></i> จำนวน '.$result->num_rows.' รายการ';
+	  	echo '<i class="fa fa-info-circle"></i> จำนวน '.$resultTmp->num_rows.' รายการ';
 	  	echo '</div>';
 	  	echo '<div class="w3-container">';
 	  	echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
@@ -995,7 +1022,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 20)){
 	  	}
 	  	echo '</table>';
 	  	echo '</div>';
-	  	getPaging($type, $result->num_rows, _PER_PAGE_2, $key);
+	  	getPaging($type, $resultTmp->num_rows, _PER_PAGE_2, $key, $pagenum);
 	}else{
 		echo '<div class="w3-container">';
 		echo '<div class="w3-center w3-padding-64">';
@@ -1017,13 +1044,17 @@ if(isset($_POST['type']) && ($_POST['type'] == 22 || $_POST['type'] == 24)){
 	}
 	$st = $_POST['st'];
 
+	$sqlTmp = "SELECT F.*, U.User_Fullname FROM farm AS F ";
+	$sqlTmp.= "INNER JOIN user AS U ON F.User_ID=U.User_ID AND F.User_ID=".$_SESSION['sessUserId']." $cond ";
+	$resultTmp = $conn->query($sqlTmp);
+
 	$sql = "SELECT F.*, U.User_Fullname FROM farm AS F ";
 	$sql.= "INNER JOIN user AS U ON F.User_ID=U.User_ID AND F.User_ID=".$_SESSION['sessUserId']." $cond ";
 	$sql.= "LIMIT $st, "._PER_PAGE_2;
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 		echo '<div class="w3-container">';
-		echo '<i class="fa fa-info-circle"></i> จำนวน '.$result->num_rows.' รายการ';
+		echo '<i class="fa fa-info-circle"></i> จำนวน '.$resultTmp->num_rows.' รายการ';
 		echo '</div>';
 		echo '<div class="w3-container">';
 		echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
@@ -1080,7 +1111,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 22 || $_POST['type'] == 24)){
 	  	}
 	  	echo '</table>';
 	  	echo '</div>';
-		getPaging($type, $result->num_rows, _PER_PAGE_2, $key);
+		getPaging($type, $resultTmp->num_rows, _PER_PAGE_2, $key, $pagenum);
 	}else{
 		echo '<div class="w3-container">';
 		echo '<div class="w3-center w3-padding-64">';
@@ -1103,13 +1134,17 @@ if(isset($_POST['type']) && ($_POST['type'] == 26)){
 	}
 	$st = $_POST['st'];
 
+	$sqlTmp = "SELECT P.*, F.Farm_Name FROM product AS P ";
+	$sqlTmp.= "INNER JOIN farm AS F ON P.Farm_ID=F.Farm_ID AND F.Farm_ID=".$farmId." $cond ";
+	$resultTmp = $conn->query($sqlTmp);
+
 	$sql = "SELECT P.*, F.Farm_Name FROM product AS P ";
 	$sql.= "INNER JOIN farm AS F ON P.Farm_ID=F.Farm_ID AND F.Farm_ID=".$farmId." $cond ";
 	$sql.= "LIMIT $st, "._PER_PAGE_2;
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 		echo '<div class="w3-container">';
-		echo '<i class="fa fa-info-circle"></i> จำนวน '.$result->num_rows.' รายการ';
+		echo '<i class="fa fa-info-circle"></i> จำนวน '.$resultTmp->num_rows.' รายการ';
 		echo '</div>';
 		echo '<div class="w3-container">';
 		echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
@@ -1164,7 +1199,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 26)){
 	  	}
 	  	echo '</table>';
 	  	echo '</div>';
-		getPaging($type, $result->num_rows, _PER_PAGE_2, $key, $farmId);
+		getPaging($type, $resultTmp->num_rows, _PER_PAGE_2, $key, $pagenum, $farmId);
 	}else{
 		echo '<div class="w3-container">';
 		echo '<div class="w3-center w3-padding-64">';
@@ -1186,6 +1221,11 @@ if(isset($_POST['type']) && ($_POST['type'] == 28)){
 	}
 	$st = $_POST['st'];
 
+	$sqlTmp = "SELECT J.*, F.Farm_ID, F.Farm_Name, U.User_ID, U.User_Fullname FROM jobs AS J ";
+	$sqlTmp.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID ";
+	$sqlTmp.= "INNER JOIN user AS U ON F.User_ID=F.User_ID AND U.User_ID=".$_SESSION['sessUserId']." $cond ";
+	$resultTmp = $conn->query($sqlTmp);
+
 	$sql = "SELECT J.*, F.Farm_ID, F.Farm_Name, U.User_ID, U.User_Fullname FROM jobs AS J ";
 	$sql.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID ";
 	$sql.= "INNER JOIN user AS U ON F.User_ID=F.User_ID AND U.User_ID=".$_SESSION['sessUserId']." $cond ";
@@ -1193,7 +1233,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 28)){
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 	  echo '<div class="w3-container">';
-	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$result->num_rows.' รายการ';
+	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$resultTmp->num_rows.' รายการ';
 	  echo '</div>';
 	  echo '<div class="w3-container">';
 	  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
@@ -1244,7 +1284,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 28)){
 	  }
 	  echo '</table>';
 	  echo '</div>';
-	  getPaging($type, $result->num_rows, _PER_PAGE_2, $key);
+	  getPaging($type, $resultTmp->num_rows, _PER_PAGE_2, $key, $pagenum);
 	}else{
 		echo '<div class="w3-container">';
 		echo '<div class="w3-center w3-padding-64">';
@@ -1269,6 +1309,11 @@ if(isset($_POST['type']) && ($_POST['type'] == 31)){
   	echo '<h6><b><i class="fa fa-address-card-o"></i> ตำแหน่ง : '.$row['Job_Title'].'</b></h6>';
   	echo '<h6><b><i class="fa fa-leaf"></i> ฟาร์ม : '.$row['Farm_Name'].'</b></h6>';
 
+	$sql_jrTmp = "SELECT JR.*, R.*, O.* FROM jobs_resume AS JR ";
+	$sql_jrTmp.= "INNER JOIN resume AS R ON R.Res_ID=JR.Res_ID ";
+	$sql_jrTmp.= "INNER JOIN occupation AS O ON R.Occ_ID=O.Occ_ID WHERE JR.Job_ID=".$jobId;
+	$res_jrTmp = $conn->query($sql_jrTmp);
+
 	$sql_jr = "SELECT JR.*, R.*, O.* FROM jobs_resume AS JR ";
 	$sql_jr.= "INNER JOIN resume AS R ON R.Res_ID=JR.Res_ID ";
 	$sql_jr.= "INNER JOIN occupation AS O ON R.Occ_ID=O.Occ_ID WHERE JR.Job_ID=".$jobId;
@@ -1276,7 +1321,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 31)){
 	$res_jr = $conn->query($sql_jr);
 	if ($res_jr->num_rows > 0) {
 	  echo '<div class="w3-container">';
-	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$res_jr->num_rows.' รายการ';
+	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$res_jrTmp->num_rows.' รายการ';
 	  echo '</div>';
 	  echo '<div class="w3-container">';
 	  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
@@ -1333,7 +1378,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 31)){
 	  }
 	  echo '</table>';
 	  echo '</div>';
-	  getPaging($type, $result->num_rows, _PER_PAGE_2, $key);
+	  getPaging($type, $resultTmp->num_rows, _PER_PAGE_2, $key, $pagenum);
 	}else{
 		echo '<div class="w3-container">';
 		echo '<div class="w3-center w3-padding-64">';
@@ -1363,6 +1408,11 @@ function getJob(t, no){
 	}
 	$st = $_POST['st'];
 
+	$sql_jrTmp = "SELECT R.*, O.* FROM resume AS R ";
+	$sql_jrTmp.= "INNER JOIN occupation AS O ON R.Occ_ID=O.Occ_ID ";
+	$sql_jrTmp.= "WHERE R.Res_ID NOT IN (SELECT JR.Res_ID FROM jobs_resume AS JR) ";
+	$res_jrTmp = $conn->query($sql_jrTmp);
+
 	$sql_jr = "SELECT R.*, O.* FROM resume AS R ";
 	$sql_jr.= "INNER JOIN occupation AS O ON R.Occ_ID=O.Occ_ID ";
 	$sql_jr.= "WHERE R.Res_ID NOT IN (SELECT JR.Res_ID FROM jobs_resume AS JR) ";
@@ -1370,7 +1420,7 @@ function getJob(t, no){
 	$res_jr = $conn->query($sql_jr);
 	if ($res_jr->num_rows > 0) {
 	  echo '<div class="w3-container">';
-	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$res_jr->num_rows.' รายการ';
+	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$res_jrTmp->num_rows.' รายการ';
 	  echo '</div>';
 	  echo '<div class="w3-container">';
 	  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
@@ -1463,7 +1513,7 @@ function getJob(t, no){
 	  }
 	  echo '</table>';
 	  echo '</div>';
-	  getPaging($type, $res_jr->num_rows, _PER_PAGE_2, $key);
+	  getPaging($type, $res_jrTmp->num_rows, _PER_PAGE_2, $key, $pagenum);
 	}else{
 		echo '<div class="w3-container">';
 		echo '<div class="w3-center w3-padding-64">';
@@ -1514,6 +1564,11 @@ if(isset($_POST['type']) && ($_POST['type'] == 38)){
 	}
 	$st = $_POST['st'];
 
+	$sqlTmp = "SELECT J.*, F.Farm_ID, F.Farm_Name, U.User_ID, U.User_Fullname FROM jobs AS J ";
+	$sqlTmp.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID ";
+	$sqlTmp.= "INNER JOIN user AS U ON F.User_ID=F.User_ID AND U.User_ID=".$_SESSION['sessUserId']." $cond ";
+	$resultTmp = $conn->query($sqlTmp);
+
 	$sql = "SELECT J.*, F.Farm_ID, F.Farm_Name, U.User_ID, U.User_Fullname FROM jobs AS J ";
 	$sql.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID ";
 	$sql.= "INNER JOIN user AS U ON F.User_ID=F.User_ID AND U.User_ID=".$_SESSION['sessUserId']." $cond ";
@@ -1521,7 +1576,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 38)){
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 	  echo '<div class="w3-container">';
-	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$result->num_rows.' รายการ';
+	  echo '<i class="fa fa-info-circle"></i> จำนวน '.$resultTmp->num_rows.' รายการ';
 	  echo '</div>';
 	  echo '<div class="w3-container">';
 	  echo '<table class="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white">';
@@ -1577,7 +1632,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 38)){
 	  }
 	  echo '</table>';
 	  echo '</div>';
-	  getPaging($type, $result->num_rows, _PER_PAGE_2, $key);
+	  getPaging($type, $resultTmp->num_rows, _PER_PAGE_2, $key, $pagenum);
 	}else{
 		echo '<div class="w3-container">';
 		echo '<div class="w3-center w3-padding-64">';
