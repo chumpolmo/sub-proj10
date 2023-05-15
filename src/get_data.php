@@ -1223,12 +1223,12 @@ if(isset($_POST['type']) && ($_POST['type'] == 28)){
 
 	$sqlTmp = "SELECT J.*, F.Farm_ID, F.Farm_Name, U.User_ID, U.User_Fullname FROM jobs AS J ";
 	$sqlTmp.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID ";
-	$sqlTmp.= "INNER JOIN user AS U ON F.User_ID=F.User_ID AND U.User_ID=".$_SESSION['sessUserId']." $cond ";
+	$sqlTmp.= "INNER JOIN user AS U ON F.User_ID=U.User_ID AND U.User_ID=".$_SESSION['sessUserId']." $cond ";
 	$resultTmp = $conn->query($sqlTmp);
 
 	$sql = "SELECT J.*, F.Farm_ID, F.Farm_Name, U.User_ID, U.User_Fullname FROM jobs AS J ";
 	$sql.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID ";
-	$sql.= "INNER JOIN user AS U ON F.User_ID=F.User_ID AND U.User_ID=".$_SESSION['sessUserId']." $cond ";
+	$sql.= "INNER JOIN user AS U ON F.User_ID=U.User_ID AND U.User_ID=".$_SESSION['sessUserId']." $cond ";
 	$sql.= "LIMIT $st, "._PER_PAGE_2;
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
@@ -1362,8 +1362,9 @@ if(isset($_POST['type']) && ($_POST['type'] == 31)){
 
    	 	echo '</td>';
    	 	// ผู้ใช้สามารถสมัครงานได้มากกว่า 1 ตำแหน่ง
-   	 	$sql_j = "SELECT JR.*,R.User_ID FROM jobs_resume AS JR INNER JOIN resume AS R ON JR.Res_ID=R.Res_ID AND JR.Job_ID=".$row_jr['Job_ID'];
-   	 	$res_j = $conn->query($sql_j);
+   	 	$sql_j = "SELECT JR.*,R.User_ID FROM jobs_resume AS JR INNER JOIN resume AS R ";
+		$sql_j.= "ON JR.Res_ID=R.Res_ID AND JR.Job_ID=".$row_jr['Job_ID']." AND JR.Res_ID=".$row_jr['Res_ID'];
+		$res_j = $conn->query($sql_j);
    	 	$row_j = $res_j->fetch_assoc();
     	echo '<td>';
     	if ($res_j->num_rows > 0) {
@@ -1375,6 +1376,7 @@ if(isset($_POST['type']) && ($_POST['type'] == 31)){
     	}
     	echo '<a href="../src/proc_data.php?act=EMPCAN&job_id='.$row_j['Job_ID'].'&res_id='.$row_j['Res_ID'].'" class="w3-button w3-red w3-center" onClick="return confirmInfo(\'คุณต้องการยกเลิกการจ้างงาน?\')"><i class="fa fa-times-circle"></i> '._CANCEL.'</a>';
     	echo '</td></tr>';
+		$res_j->free_result();
 	  }
 	  echo '</table>';
 	  echo '</div>';
@@ -1428,7 +1430,7 @@ function getJob(t, no){
 	  $no = 0;
 	  while($row_jr = $res_jr->fetch_assoc()) {
 	  	$no++;
-    	echo '<tr><td>'.($no).'</td>';
+    	echo '<tr><td>'.($no+$st).'</td>';
    	 	echo '<td>'.getPrefix($row_jr['Res_Prefix']).$row_jr['Res_Name'].' '.$row_jr['Res_Surname'].'</td>';
    	 	echo '<td>'.$row_jr['Occ_Name'].'</td>';
    	 	echo '<td><a onClick="document.getElementById(\'jd'.($no).'\').style.display=\'block\'" class="w3-button w3-green w3-center"><i class="fa fa-eye"></i> ดูประวัติ</a>';
@@ -1566,12 +1568,12 @@ if(isset($_POST['type']) && ($_POST['type'] == 38)){
 
 	$sqlTmp = "SELECT J.*, F.Farm_ID, F.Farm_Name, U.User_ID, U.User_Fullname FROM jobs AS J ";
 	$sqlTmp.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID ";
-	$sqlTmp.= "INNER JOIN user AS U ON F.User_ID=F.User_ID AND U.User_ID=".$_SESSION['sessUserId']." $cond ";
+	$sqlTmp.= "INNER JOIN user AS U ON F.User_ID=U.User_ID AND U.User_ID=".$_SESSION['sessUserId']." $cond ";
 	$resultTmp = $conn->query($sqlTmp);
 
 	$sql = "SELECT J.*, F.Farm_ID, F.Farm_Name, U.User_ID, U.User_Fullname FROM jobs AS J ";
 	$sql.= "INNER JOIN farm AS F ON J.Farm_ID=F.Farm_ID ";
-	$sql.= "INNER JOIN user AS U ON F.User_ID=F.User_ID AND U.User_ID=".$_SESSION['sessUserId']." $cond ";
+	$sql.= "INNER JOIN user AS U ON F.User_ID=U.User_ID AND U.User_ID=".$_SESSION['sessUserId']." $cond ";
 	$sql.= "LIMIT $st, "._PER_PAGE_2;
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {

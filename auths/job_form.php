@@ -83,7 +83,7 @@ if(!isset($_SESSION['sessLoggedIn']) || $_SESSION['sessLoggedIn'] === false){
                   <select name="farmId" class="w3-select w3-border" required>
                     <option value="">-ระบุฟาร์ม-</option>
                     <?php
-                    $sql_fa = "SELECT F.* FROM farm AS F";
+                    $sql_fa = "SELECT F.* FROM farm AS F WHERE F.User_ID=".$_SESSION['sessUserId'];
                     $res_fa = $conn->query($sql_fa);
                     while($row_fa = $res_fa->fetch_assoc()){
                       $sel = "";
