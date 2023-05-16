@@ -19,9 +19,11 @@
       </form>
 
       <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
-        <button onclick="document.getElementById('id01').style.display='none'" type="button" class="w3-button w3-red"><?=_CANCEL?></button>
-        <span class="w3-right w3-padding w3-hide-small"><a href="register.php">สมัครสมาชิก</a></span>
-        <span class="w3-right w3-padding w3-hide-small">ลืม<a onclick="document.getElementById('id01').style.display='none';document.getElementById('id02').style.display='block';">รหัสผ่าน?</a></span>
+        <button onclick="document.getElementById('id01').style.display='none'" type="button" class="w3-button w3-red w3-mobile"><?=_CANCEL?></button>
+        <span class="w3-mobile">
+          <span class="w3-right w3-padding"><a href="register.php">สมัครสมาชิก</a></span>
+          <span class="w3-right w3-padding">ลืม<a onclick="document.getElementById('id01').style.display='none';document.getElementById('id02').style.display='block';">รหัสผ่าน?</a></span>
+        </span>
       </div>
 
     </div>
